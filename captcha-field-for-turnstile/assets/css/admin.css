@@ -1,0 +1,22 @@
+/**
+ * Admin settings page styles.
+ *
+ * @package TurnstileForms
+ */
+
+.turnstile-forms-settings h2 {
+	margin-top: 1.5em;
+}
+
+.turnstile-forms-settings .form-table th {
+	width: 220px;
+}
+
+.turnstile-forms-settings input[type="password"],
+.turnstile-forms-settings input[type="text"].regular-text {
+	max-width: 480px;
+}
+
+.turnstile-forms-settings .description {
+	max-width: 520px;
+}

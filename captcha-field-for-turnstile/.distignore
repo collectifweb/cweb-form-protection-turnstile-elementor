@@ -1,0 +1,10 @@
+# Files and folders excluded from the WordPress.org build (wp-cli dist-archive
+# / the deploy action read this). The development tests, GitHub readme and VCS
+# metadata must not ship in the production package.
+/.git
+/.github
+/.gitignore
+/.distignore
+/node_modules
+/tests
+/README.md
