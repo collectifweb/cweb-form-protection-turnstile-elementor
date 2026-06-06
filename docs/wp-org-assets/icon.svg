@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="CWeb Turnstile for Elementor Forms">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2a44"/>
+      <stop offset="1" stop-color="#0f1830"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6821f"/>
+      <stop offset="1" stop-color="#e35f00"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <!-- Shield -->
+  <path d="M128 40 L196 66 V126 C196 168 166 200 128 216 C90 200 60 168 60 126 V66 Z"
+        fill="url(#shield)"/>
+  <path d="M128 40 L196 66 V126 C196 168 166 200 128 216 C90 200 60 168 60 126 V66 Z"
+        fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3"/>
+  <!-- Checkmark -->
+  <path d="M97 130 L119 152 L162 100" fill="none" stroke="#ffffff" stroke-width="16"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

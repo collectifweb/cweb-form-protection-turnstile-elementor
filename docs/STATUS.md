@@ -1,7 +1,23 @@
-# STATUS — Captcha Field for Turnstile (handoff / reprise après compaction)
+# STATUS — CWeb Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-06-06. Cet état est autonome : tout est dans
-> `captcha-field-for-turnstile/` (le plugin) et `docs/` (plan + revues).
+> Dernière mise à jour : 2026-06-06 (passe WP.org). Le plugin vit dans
+> `cweb-turnstile-for-elementor-forms/` ; les tests dans `tests/` (racine repo,
+> hors plugin) ; la doc + assets dans `docs/`.
+
+> **MISE À JOUR 2026-06-06 (mise aux normes WordPress.org)** — Le plugin a été
+> **renommé `captcha-field-for-turnstile` → `CWeb Turnstile for Elementor Forms`**
+> (slug `cweb-turnstile-for-elementor-forms`, namespace `CWebTS`, préfixe
+> `cwebts_`/`CWEBTS_`/`.cwebts-` ; `cf-turnstile` gardé). Repo harmonisé sur le
+> sibling `cweb-product-finder-for-gravity-forms` : `README.md`/`LICENSE`/
+> `CHANGELOG.md` à la racine, `docs/{ARCHITECTURE.md,screenshots/,wp-org-assets/}`,
+> `tests/` sorti du dossier plugin. **Plugin Check** (rapport
+> `docs/cweb-turnstile-...-184143.md`) **corrigé** : tests hors-build, `.distignore`
+> supprimé, `load_plugin_textdomain` retiré, version sur `wp_register_script`,
+> `phpcs:ignore` nonce ciblés, vars uninstall préfixées. `Contributors:
+> alexandreminem`. `php -l` OK, **52/52 tests**, zip `cweb-turnstile-for-elementor-forms-1.0.0.zip` prêt.
+> Repo GitHub `collectifweb/plugin_Turnstile` (PUBLIC) — **à renommer**
+> `CWeb-Turnstile-for-Elementor-Forms`. Reste : screenshots réels, SVN, soumission.
+> Les sections ci-dessous gardent l'historique de conception (slugs d'origine).
 
 ## Où en est-on
 

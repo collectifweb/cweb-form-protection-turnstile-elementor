@@ -1,0 +1,22 @@
+/**
+ * Admin settings page styles.
+ *
+ * @package CWebTS
+ */
+
+.cwebts-settings h2 {
+	margin-top: 1.5em;
+}
+
+.cwebts-settings .form-table th {
+	width: 220px;
+}
+
+.cwebts-settings input[type="password"],
+.cwebts-settings input[type="text"].regular-text {
+	max-width: 480px;
+}
+
+.cwebts-settings .description {
+	max-width: 520px;
+}

@@ -1,0 +1,23 @@
+.env
+.env.*
+.history/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Build artifacts
+node_modules/
+vendor/
+*.log
+*.zip
+
+# WP.org Plugin Check reports (diagnostic exports)
+cweb-turnstile-for-elementor-forms-*.json
+
+# Local reviewer correspondence (.eml exports etc.)
+*.eml
