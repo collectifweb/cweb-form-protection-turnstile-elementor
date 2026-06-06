@@ -1,17 +1,17 @@
 # Plugin Check Report
 
 **Plugin:** CWeb Turnstile for Elementor Forms
-**Generated at:** 2026-06-06 18:59:13
+**Generated at:** 2026-06-06 19:08:31
 
 
 ## `includes/elementor/class-turnstile-field.php`
 
 | Line | Column | Type | Code | Message | Docs |
 | --- | --- | --- | --- | --- | --- |
-| 132 | 71 | WARNING | WordPress.Security.ValidatedSanitizedInput.InputNotSanitized | Detected usage of a non-sanitized input variable: $_POST[&#039;cf-turnstile-response&#039;] |  |
+| 132 | 15 | WARNING | WordPress.Security.NonceVerification.Missing | Processing form data without nonce verification. |  |
 
 ## `includes/integrations/class-abstract-integration.php`
 
 | Line | Column | Type | Code | Message | Docs |
 | --- | --- | --- | --- | --- | --- |
-| 108 | 67 | WARNING | WordPress.Security.ValidatedSanitizedInput.InputNotSanitized | Detected usage of a non-sanitized input variable: $_POST[&#039;cf-turnstile-response&#039;] |  |
+| 107 | 17 | WARNING | WordPress.Security.NonceVerification.Missing | Processing form data without nonce verification. |  |

@@ -128,11 +128,8 @@ class Turnstile_Field extends Field_Base {
 
 		// Elementor handles its own form nonce; the captcha token is a separate
 		// field that Cloudflare itself verifies, so nonce verification is N/A here.
-		$token = '';
-		if ( isset( $_POST['cf-turnstile-response'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$token = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Captcha token, not a nonce-guarded action.
+		$token = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ) : '';
 
 		if ( ! $this->verifier->verify( $token, null, self::ACTION ) ) {
 			$ajax_handler->add_error( $field['id'], $this->settings->get_error_message() );

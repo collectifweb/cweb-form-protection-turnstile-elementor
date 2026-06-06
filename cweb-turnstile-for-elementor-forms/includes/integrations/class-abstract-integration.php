@@ -104,12 +104,8 @@ abstract class Abstract_Integration {
 	protected function get_token() {
 		// Each native form carries its own nonce; the captcha token is a separate
 		// field that Cloudflare itself verifies, so nonce verification is N/A here.
-		if ( ! isset( $_POST['cf-turnstile-response'] ) ) {
-			return '';
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		return sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Captcha token, not a nonce-guarded action.
+		return isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ) : '';
 	}
 
 	/**
