@@ -60,7 +60,7 @@ class WP_Comments extends Abstract_Integration {
 		if ( ! $this->passes() ) {
 			wp_die(
 				esc_html( $this->settings->get_error_message() ),
-				esc_html__( 'Comment Submission Failure', 'cweb-turnstile-for-elementor-forms' ),
+				esc_html__( 'Comment Submission Failure', 'cweb-form-protection-turnstile-elementor' ),
 				array(
 					'response'  => 403,
 					'back_link' => true,

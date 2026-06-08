@@ -1,14 +1,14 @@
-# Translation template for CWeb Turnstile for Elementor Forms.
+# Translation template for CWeb Form Protection with Turnstile for Elementor Forms.
 # Copyright (C) 2026 Collectif WEB
-# This file is distributed under the same license as the CWeb Turnstile for Elementor Forms package.
+# This file is distributed under the same license as the CWeb Form Protection with Turnstile for Elementor Forms package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CWeb Turnstile for Elementor Forms 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/collectifweb/CWeb-Turnstile-for-"
-"Elementor-Forms\n"
+"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/collectifweb/cweb-form-protection-"
+"turnstile-elementor\n"
 "POT-Creation-Date: 2026-06-06 14:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: cweb-turnstile-for-elementor-forms\n"
+"X-Domain: cweb-form-protection-turnstile-elementor\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: includes/class-plugin.php:115
@@ -29,11 +29,11 @@ msgid "Please confirm you are not a robot."
 msgstr ""
 
 #: includes/class-settings.php:156 includes/class-settings.php:684
-msgid "CWeb Turnstile for Elementor Forms"
+msgid "CWeb Form Protection with Turnstile for Elementor Forms"
 msgstr ""
 
 #: includes/class-settings.php:157
-msgid "CWeb Turnstile"
+msgid "CWeb Form Protection"
 msgstr ""
 
 #: includes/class-settings.php:182
@@ -232,7 +232,7 @@ msgstr[1] ""
 
 #: includes/class-settings.php:730
 msgid ""
-"CWeb Turnstile for Elementor Forms is active but no keys are configured yet, "
+"CWeb Form Protection with Turnstile for Elementor Forms is active but no keys are configured yet, "
 "so no form is protected."
 msgstr ""
 

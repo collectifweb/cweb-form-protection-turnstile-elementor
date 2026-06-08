@@ -83,7 +83,7 @@ class Turnstile_Field extends Field_Base {
 	 * @return string
 	 */
 	public function get_name() {
-		return esc_html__( 'Cloudflare Turnstile', 'cweb-turnstile-for-elementor-forms' );
+		return esc_html__( 'Cloudflare Turnstile', 'cweb-form-protection-turnstile-elementor' );
 	}
 
 	/**

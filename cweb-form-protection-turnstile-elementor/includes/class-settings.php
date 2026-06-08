@@ -40,7 +40,7 @@ class Settings {
 			'size'                 => 'flexible',
 			'appearance'           => 'always',
 			'language'             => 'auto',
-			'error_message'        => __( 'Please confirm you are not a robot.', 'cweb-turnstile-for-elementor-forms' ),
+			'error_message'        => __( 'Please confirm you are not a robot.', 'cweb-form-protection-turnstile-elementor' ),
 			'protect_login'        => 0,
 			'protect_register'     => 0,
 			'protect_lostpassword' => 0,
@@ -153,8 +153,8 @@ class Settings {
 	 */
 	public function add_menu() {
 		add_options_page(
-			__( 'CWeb Turnstile for Elementor Forms', 'cweb-turnstile-for-elementor-forms' ),
-			__( 'CWeb Turnstile', 'cweb-turnstile-for-elementor-forms' ),
+			__( 'CWeb Form Protection with Turnstile for Elementor Forms', 'cweb-form-protection-turnstile-elementor' ),
+			__( 'CWeb Form Protection', 'cweb-form-protection-turnstile-elementor' ),
 			self::CAP,
 			self::PAGE,
 			array( $this, 'render_page' )
@@ -179,47 +179,47 @@ class Settings {
 
 		add_settings_section(
 			'cwebts_keys',
-			__( 'Cloudflare Turnstile keys', 'cweb-turnstile-for-elementor-forms' ),
+			__( 'Cloudflare Turnstile keys', 'cweb-form-protection-turnstile-elementor' ),
 			array( $this, 'section_keys_intro' ),
 			self::PAGE
 		);
 
-		add_settings_field( 'site_key', __( 'Site key', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_site_key' ), self::PAGE, 'cwebts_keys' );
-		add_settings_field( 'secret_key', __( 'Secret key', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_secret_key' ), self::PAGE, 'cwebts_keys' );
+		add_settings_field( 'site_key', __( 'Site key', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_site_key' ), self::PAGE, 'cwebts_keys' );
+		add_settings_field( 'secret_key', __( 'Secret key', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_secret_key' ), self::PAGE, 'cwebts_keys' );
 
 		add_settings_section(
 			'cwebts_appearance',
-			__( 'Widget appearance', 'cweb-turnstile-for-elementor-forms' ),
+			__( 'Widget appearance', 'cweb-form-protection-turnstile-elementor' ),
 			'__return_false',
 			self::PAGE
 		);
 
-		add_settings_field( 'theme', __( 'Theme', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_theme' ), self::PAGE, 'cwebts_appearance' );
-		add_settings_field( 'size', __( 'Size', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_size' ), self::PAGE, 'cwebts_appearance' );
-		add_settings_field( 'appearance', __( 'Visibility', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_appearance' ), self::PAGE, 'cwebts_appearance' );
-		add_settings_field( 'language', __( 'Language', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_language' ), self::PAGE, 'cwebts_appearance' );
-		add_settings_field( 'error_message', __( 'Error message', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_error_message' ), self::PAGE, 'cwebts_appearance' );
+		add_settings_field( 'theme', __( 'Theme', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_theme' ), self::PAGE, 'cwebts_appearance' );
+		add_settings_field( 'size', __( 'Size', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_size' ), self::PAGE, 'cwebts_appearance' );
+		add_settings_field( 'appearance', __( 'Visibility', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_appearance' ), self::PAGE, 'cwebts_appearance' );
+		add_settings_field( 'language', __( 'Language', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_language' ), self::PAGE, 'cwebts_appearance' );
+		add_settings_field( 'error_message', __( 'Error message', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_error_message' ), self::PAGE, 'cwebts_appearance' );
 
 		add_settings_section(
 			'cwebts_native',
-			__( 'WordPress forms', 'cweb-turnstile-for-elementor-forms' ),
+			__( 'WordPress forms', 'cweb-form-protection-turnstile-elementor' ),
 			array( $this, 'section_native_intro' ),
 			self::PAGE
 		);
 
-		add_settings_field( 'protect_login', __( 'Login form', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_protect_login' ), self::PAGE, 'cwebts_native' );
-		add_settings_field( 'protect_register', __( 'Registration form', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_protect_register' ), self::PAGE, 'cwebts_native' );
-		add_settings_field( 'protect_lostpassword', __( 'Lost password form', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_protect_lostpassword' ), self::PAGE, 'cwebts_native' );
-		add_settings_field( 'protect_comments', __( 'Comment form', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_protect_comments' ), self::PAGE, 'cwebts_native' );
+		add_settings_field( 'protect_login', __( 'Login form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_login' ), self::PAGE, 'cwebts_native' );
+		add_settings_field( 'protect_register', __( 'Registration form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_register' ), self::PAGE, 'cwebts_native' );
+		add_settings_field( 'protect_lostpassword', __( 'Lost password form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_lostpassword' ), self::PAGE, 'cwebts_native' );
+		add_settings_field( 'protect_comments', __( 'Comment form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_comments' ), self::PAGE, 'cwebts_native' );
 
 		add_settings_section(
 			'cwebts_advanced',
-			__( 'Advanced', 'cweb-turnstile-for-elementor-forms' ),
+			__( 'Advanced', 'cweb-form-protection-turnstile-elementor' ),
 			'__return_false',
 			self::PAGE
 		);
 
-		add_settings_field( 'failure_mode', __( 'If Cloudflare is unreachable', 'cweb-turnstile-for-elementor-forms' ), array( $this, 'field_failure_mode' ), self::PAGE, 'cwebts_advanced' );
+		add_settings_field( 'failure_mode', __( 'If Cloudflare is unreachable', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_failure_mode' ), self::PAGE, 'cwebts_advanced' );
 	}
 
 	/**
@@ -378,7 +378,7 @@ class Settings {
 	 */
 	public function handle_import() {
 		if ( ! current_user_can( self::CAP ) ) {
-			wp_die( esc_html__( 'You are not allowed to do this.', 'cweb-turnstile-for-elementor-forms' ) );
+			wp_die( esc_html__( 'You are not allowed to do this.', 'cweb-form-protection-turnstile-elementor' ) );
 		}
 
 		check_admin_referer( self::IMPORT_ACTION );
@@ -408,12 +408,12 @@ class Settings {
 		}
 		?>
 		<div class="notice notice-info inline cwebts-import">
-			<p><strong><?php esc_html_e( 'Migrating from Simple Cloudflare Turnstile?', 'cweb-turnstile-for-elementor-forms' ); ?></strong></p>
-			<p><?php esc_html_e( 'We detected keys and settings from "Simple Cloudflare Turnstile". You can copy them here so you do not have to recreate your Cloudflare keys. This does not change or deactivate the other plugin.', 'cweb-turnstile-for-elementor-forms' ); ?></p>
+			<p><strong><?php esc_html_e( 'Migrating from Simple Cloudflare Turnstile?', 'cweb-form-protection-turnstile-elementor' ); ?></strong></p>
+			<p><?php esc_html_e( 'We detected keys and settings from "Simple Cloudflare Turnstile". You can copy them here so you do not have to recreate your Cloudflare keys. This does not change or deactivate the other plugin.', 'cweb-form-protection-turnstile-elementor' ); ?></p>
 			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
 				<input type="hidden" name="action" value="<?php echo esc_attr( self::IMPORT_ACTION ); ?>" />
 				<?php wp_nonce_field( self::IMPORT_ACTION ); ?>
-				<?php submit_button( __( 'Import keys & settings', 'cweb-turnstile-for-elementor-forms' ), 'secondary', 'submit', false ); ?>
+				<?php submit_button( __( 'Import keys & settings', 'cweb-form-protection-turnstile-elementor' ), 'secondary', 'submit', false ); ?>
 			</form>
 		</div>
 		<?php
@@ -434,7 +434,7 @@ class Settings {
 			wp_kses(
 				sprintf(
 					/* translators: %s: Cloudflare dashboard URL. */
-					__( 'Create a free widget and get your keys from the <a href="%s" target="_blank" rel="noopener noreferrer">Cloudflare dashboard</a>.', 'cweb-turnstile-for-elementor-forms' ),
+					__( 'Create a free widget and get your keys from the <a href="%s" target="_blank" rel="noopener noreferrer">Cloudflare dashboard</a>.', 'cweb-form-protection-turnstile-elementor' ),
 					'https://dash.cloudflare.com/?to=/:account/turnstile'
 				),
 				array(
@@ -456,7 +456,7 @@ class Settings {
 	public function section_native_intro() {
 		printf(
 			'<p>%s</p>',
-			esc_html__( 'Enable Turnstile on the built-in WordPress forms. For Elementor Pro forms, add the "Cloudflare Turnstile" field to the specific forms you want to protect.', 'cweb-turnstile-for-elementor-forms' )
+			esc_html__( 'Enable Turnstile on the built-in WordPress forms. For Elementor Pro forms, add the "Cloudflare Turnstile" field to the specific forms you want to protect.', 'cweb-form-protection-turnstile-elementor' )
 		);
 	}
 
@@ -484,20 +484,20 @@ class Settings {
 		printf(
 			'<input type="password" class="regular-text" name="%1$s[secret_key]" value="" autocomplete="new-password" placeholder="%2$s" />',
 			esc_attr( self::OPTION ),
-			esc_attr( $has_secret ? __( '••••••••  (a secret key is saved)', 'cweb-turnstile-for-elementor-forms' ) : __( 'Enter your secret key', 'cweb-turnstile-for-elementor-forms' ) )
+			esc_attr( $has_secret ? __( '••••••••  (a secret key is saved)', 'cweb-form-protection-turnstile-elementor' ) : __( 'Enter your secret key', 'cweb-form-protection-turnstile-elementor' ) )
 		);
 
 		if ( $has_secret ) {
 			printf(
 				'<p><label><input type="checkbox" name="%1$s[remove_secret]" value="1" /> %2$s</label></p><p class="description">%3$s</p>',
 				esc_attr( self::OPTION ),
-				esc_html__( 'Remove the saved secret key', 'cweb-turnstile-for-elementor-forms' ),
-				esc_html__( 'Leave the field empty to keep the saved key. The secret key is never displayed.', 'cweb-turnstile-for-elementor-forms' )
+				esc_html__( 'Remove the saved secret key', 'cweb-form-protection-turnstile-elementor' ),
+				esc_html__( 'Leave the field empty to keep the saved key. The secret key is never displayed.', 'cweb-form-protection-turnstile-elementor' )
 			);
 		} else {
 			printf(
 				'<p class="description">%s</p>',
-				esc_html__( 'The secret key is stored server-side and never sent to the browser.', 'cweb-turnstile-for-elementor-forms' )
+				esc_html__( 'The secret key is stored server-side and never sent to the browser.', 'cweb-form-protection-turnstile-elementor' )
 			);
 		}
 	}
@@ -537,9 +537,9 @@ class Settings {
 		$this->render_select(
 			'theme',
 			array(
-				'auto'  => __( 'Auto', 'cweb-turnstile-for-elementor-forms' ),
-				'light' => __( 'Light', 'cweb-turnstile-for-elementor-forms' ),
-				'dark'  => __( 'Dark', 'cweb-turnstile-for-elementor-forms' ),
+				'auto'  => __( 'Auto', 'cweb-form-protection-turnstile-elementor' ),
+				'light' => __( 'Light', 'cweb-form-protection-turnstile-elementor' ),
+				'dark'  => __( 'Dark', 'cweb-form-protection-turnstile-elementor' ),
 			)
 		);
 	}
@@ -553,9 +553,9 @@ class Settings {
 		$this->render_select(
 			'size',
 			array(
-				'normal'   => __( 'Normal', 'cweb-turnstile-for-elementor-forms' ),
-				'flexible' => __( 'Flexible', 'cweb-turnstile-for-elementor-forms' ),
-				'compact'  => __( 'Compact', 'cweb-turnstile-for-elementor-forms' ),
+				'normal'   => __( 'Normal', 'cweb-form-protection-turnstile-elementor' ),
+				'flexible' => __( 'Flexible', 'cweb-form-protection-turnstile-elementor' ),
+				'compact'  => __( 'Compact', 'cweb-form-protection-turnstile-elementor' ),
 			)
 		);
 	}
@@ -569,8 +569,8 @@ class Settings {
 		$this->render_select(
 			'appearance',
 			array(
-				'always'           => __( 'Always visible', 'cweb-turnstile-for-elementor-forms' ),
-				'interaction-only' => __( 'Only when interaction is required', 'cweb-turnstile-for-elementor-forms' ),
+				'always'           => __( 'Always visible', 'cweb-form-protection-turnstile-elementor' ),
+				'interaction-only' => __( 'Only when interaction is required', 'cweb-form-protection-turnstile-elementor' ),
 			)
 		);
 	}
@@ -582,7 +582,7 @@ class Settings {
 	 */
 	public function field_language() {
 		$this->render_select( 'language' );
-		printf( '<p class="description">%s</p>', esc_html__( '"Auto" follows the visitor browser language.', 'cweb-turnstile-for-elementor-forms' ) );
+		printf( '<p class="description">%s</p>', esc_html__( '"Auto" follows the visitor browser language.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**
@@ -621,7 +621,7 @@ class Settings {
 	 * @return void
 	 */
 	public function field_protect_login() {
-		$this->render_toggle( 'protect_login', __( 'Protect the WordPress login form.', 'cweb-turnstile-for-elementor-forms' ) );
+		$this->render_toggle( 'protect_login', __( 'Protect the WordPress login form.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**
@@ -630,7 +630,7 @@ class Settings {
 	 * @return void
 	 */
 	public function field_protect_register() {
-		$this->render_toggle( 'protect_register', __( 'Protect the registration form.', 'cweb-turnstile-for-elementor-forms' ) );
+		$this->render_toggle( 'protect_register', __( 'Protect the registration form.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**
@@ -639,7 +639,7 @@ class Settings {
 	 * @return void
 	 */
 	public function field_protect_lostpassword() {
-		$this->render_toggle( 'protect_lostpassword', __( 'Protect the lost password form.', 'cweb-turnstile-for-elementor-forms' ) );
+		$this->render_toggle( 'protect_lostpassword', __( 'Protect the lost password form.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**
@@ -648,7 +648,7 @@ class Settings {
 	 * @return void
 	 */
 	public function field_protect_comments() {
-		$this->render_toggle( 'protect_comments', __( 'Protect the comment form.', 'cweb-turnstile-for-elementor-forms' ) );
+		$this->render_toggle( 'protect_comments', __( 'Protect the comment form.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**
@@ -660,13 +660,13 @@ class Settings {
 		$this->render_select(
 			'failure_mode',
 			array(
-				'block' => __( 'Block the submission (more secure, default)', 'cweb-turnstile-for-elementor-forms' ),
-				'allow' => __( 'Allow the submission (more available)', 'cweb-turnstile-for-elementor-forms' ),
+				'block' => __( 'Block the submission (more secure, default)', 'cweb-form-protection-turnstile-elementor' ),
+				'allow' => __( 'Allow the submission (more available)', 'cweb-form-protection-turnstile-elementor' ),
 			)
 		);
 		printf(
 			'<p class="description">%s</p>',
-			esc_html__( 'Only applies when Cloudflare cannot be reached (network error or timeout). Invalid or missing tokens are always blocked.', 'cweb-turnstile-for-elementor-forms' )
+			esc_html__( 'Only applies when Cloudflare cannot be reached (network error or timeout). Invalid or missing tokens are always blocked.', 'cweb-form-protection-turnstile-elementor' )
 		);
 	}
 
@@ -681,7 +681,7 @@ class Settings {
 		}
 		?>
 		<div class="wrap cwebts-settings">
-			<h1><?php echo esc_html__( 'CWeb Turnstile for Elementor Forms', 'cweb-turnstile-for-elementor-forms' ); ?></h1>
+			<h1><?php echo esc_html__( 'CWeb Form Protection with Turnstile for Elementor Forms', 'cweb-form-protection-turnstile-elementor' ); ?></h1>
 			<?php
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only success notice after a nonce-checked redirect.
 			if ( isset( $_GET['cwebts_imported'] ) ) {
@@ -691,7 +691,7 @@ class Settings {
 					esc_html(
 						sprintf(
 							/* translators: %d: number of imported settings. */
-							_n( '%d setting was imported from Simple Cloudflare Turnstile.', '%d settings were imported from Simple Cloudflare Turnstile.', $imported, 'cweb-turnstile-for-elementor-forms' ),
+							_n( '%d setting was imported from Simple Cloudflare Turnstile.', '%d settings were imported from Simple Cloudflare Turnstile.', $imported, 'cweb-form-protection-turnstile-elementor' ),
 							$imported
 						)
 					)
@@ -727,9 +727,9 @@ class Settings {
 
 		printf(
 			'<div class="notice notice-warning"><p>%s <a href="%s">%s</a></p></div>',
-			esc_html__( 'CWeb Turnstile for Elementor Forms is active but no keys are configured yet, so no form is protected.', 'cweb-turnstile-for-elementor-forms' ),
+			esc_html__( 'CWeb Form Protection with Turnstile for Elementor Forms is active but no keys are configured yet, so no form is protected.', 'cweb-form-protection-turnstile-elementor' ),
 			esc_url( admin_url( 'options-general.php?page=' . self::PAGE ) ),
-			esc_html__( 'Add your keys', 'cweb-turnstile-for-elementor-forms' )
+			esc_html__( 'Add your keys', 'cweb-form-protection-turnstile-elementor' )
 		);
 	}
 

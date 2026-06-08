@@ -112,7 +112,7 @@ class Plugin {
 	 */
 	public function add_settings_link( $links ) {
 		$url  = admin_url( 'options-general.php?page=cwebts' );
-		$link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'cweb-turnstile-for-elementor-forms' ) . '</a>';
+		$link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'cweb-form-protection-turnstile-elementor' ) . '</a>';
 		array_unshift( $links, $link );
 
 		return $links;

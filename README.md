@@ -1,4 +1,4 @@
-# CWeb Turnstile for Elementor Forms
+# CWeb Form Protection with Turnstile for Elementor Forms
 
 > Add Cloudflare Turnstile to your forms — with a **per-form field for Elementor Pro** so you choose exactly which forms are protected. Plus optional protection for the built-in WordPress login, registration, lost-password and comment forms.
 
@@ -6,7 +6,7 @@
 ![PHP >= 7.4](https://img.shields.io/badge/PHP-%3E%3D%207.4-777BB4)
 ![WordPress >= 5.8](https://img.shields.io/badge/WordPress-%3E%3D%205.8-21759B)
 
-**CWeb Turnstile for Elementor Forms** brings [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — a free, privacy-friendly CAPTCHA alternative — to WordPress.
+**CWeb Form Protection with Turnstile for Elementor Forms** brings [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — a free, privacy-friendly CAPTCHA alternative — to WordPress.
 
 > This plugin is a third-party companion for **Elementor** (Elementor Ltd) and **Cloudflare Turnstile** (Cloudflare, Inc.). It is not affiliated with, sponsored by, or endorsed by either. The `CWeb` prefix refers to **Collectif WEB**, the agency that maintains the plugin.
 
@@ -54,8 +54,8 @@ Elementor field validation / WP form hook  →  accept or reject the submission
 
 ## Installation
 
-1. Copy the `cweb-turnstile-for-elementor-forms` folder into `wp-content/plugins/` and activate it.
-2. **Settings → CWeb Turnstile** → enter your site key and secret key.
+1. Copy the `cweb-form-protection-turnstile-elementor` folder into `wp-content/plugins/` and activate it.
+2. **Settings → CWeb Form Protection** → enter your site key and secret key.
 3. Elementor: edit a form → add the **Cloudflare Turnstile** field → save.
 4. WordPress forms: enable the toggles you need.
 
@@ -64,8 +64,8 @@ Elementor field validation / WP form hook  →  accept or reject the submission
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full layout, data model, verification matrix and filters.
 
 ```
-cweb-turnstile-for-elementor-forms/      ← the shippable plugin (this becomes SVN trunk)
-  cweb-turnstile-for-elementor-forms.php Bootstrap + autoloader (namespace CWebTS)
+cweb-form-protection-turnstile-elementor/      ← the shippable plugin (this becomes SVN trunk)
+  cweb-form-protection-turnstile-elementor.php Bootstrap + autoloader (namespace CWebTS)
   includes/                              Settings, Verifier, Widget_Renderer, Elementor field, WP integrations
   assets/js/turnstile.js                 Explicit render + AJAX reset + expired-callback
   languages/                             .pot

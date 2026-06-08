@@ -1,9 +1,10 @@
-=== CWeb Turnstile for Elementor Forms ===
+=== CWeb Form Protection with Turnstile for Elementor Forms ===
 Contributors: alexandreminem
 Tags: turnstile, captcha, elementor, spam, cloudflare
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
+Requires Plugins: elementor
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -50,7 +51,7 @@ This plugin renders the official Cloudflare Turnstile widget and verifies tokens
 
 = About the name =
 
-The "CWeb" prefix refers to **Collectif WEB**, the agency that maintains this plugin. "Turnstile" is the Cloudflare service the plugin integrates, and the "for Elementor Forms" suffix signals compatibility with Elementor's Forms widget. This plugin is not affiliated with, sponsored by, or endorsed by Cloudflare, Inc. or Elementor Ltd.
+The distinctive part of the name is **CWeb Form Protection**, after **Collectif WEB**, the agency that maintains this plugin. The trailing "with Turnstile for Elementor Forms" only describes what the plugin integrates with: "Turnstile" is the Cloudflare service it uses, and "for Elementor Forms" signals compatibility with Elementor's Forms widget. This plugin is not affiliated with, sponsored by, or endorsed by Cloudflare, Inc. or Elementor Ltd.
 
 = Trademarks =
 
@@ -60,7 +61,7 @@ Not affiliated with Cloudflare, Inc. or Elementor Ltd. "Cloudflare" and "Turnsti
 
 1. Upload the plugin to `/wp-content/plugins/` or install it from the Plugins screen.
 2. Activate it.
-3. Go to **Settings → CWeb Turnstile** and enter your Cloudflare **site key** and **secret key**.
+3. Go to **Settings → CWeb Form Protection** and enter your Cloudflare **site key** and **secret key**.
 4. (Elementor) Edit a form, add the **Cloudflare Turnstile** field where you want the widget, then save.
 5. (WordPress forms) Enable the toggles for login, registration, lost password and/or comments.
 
@@ -80,7 +81,7 @@ Yes. The secret key is stored server-side, is never printed in the page, and is 
 
 = I already use "Simple Cloudflare Turnstile". Do I have to recreate my keys? =
 
-No. If that plugin's settings are present, the **Settings → CWeb Turnstile** page shows an "Import keys & settings" button that copies your site key, secret key, appearance options and form toggles over. Your existing Cloudflare keys keep working — nothing is regenerated, and the other plugin is left untouched.
+No. If that plugin's settings are present, the **Settings → CWeb Form Protection** page shows an "Import keys & settings" button that copies your site key, secret key, appearance options and form toggles over. Your existing Cloudflare keys keep working — nothing is regenerated, and the other plugin is left untouched.
 
 = What happens if Cloudflare can't be reached? =
 

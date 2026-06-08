@@ -1,16 +1,17 @@
 <?php
 /**
- * Plugin Name:       CWeb Turnstile for Elementor Forms
- * Plugin URI:        https://github.com/collectifweb/CWeb-Turnstile-for-Elementor-Forms
+ * Plugin Name:       CWeb Form Protection with Turnstile for Elementor Forms
+ * Plugin URI:        https://github.com/collectifweb/cweb-form-protection-turnstile-elementor
  * Description:       Cloudflare Turnstile for your forms, with a per-form field for Elementor Pro so you choose exactly which forms are protected.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
+ * Requires Plugins:  elementor
  * Author:            Collectif WEB
  * Author URI:        https://collectif-web.ca
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       cweb-turnstile-for-elementor-forms
+ * Text Domain:       cweb-form-protection-turnstile-elementor
  * Domain Path:       /languages
  *
  * Not affiliated with Cloudflare, Inc. or Elementor Ltd. "Cloudflare" and

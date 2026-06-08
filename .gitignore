@@ -17,7 +17,7 @@ vendor/
 *.zip
 
 # WP.org Plugin Check reports (diagnostic exports)
-cweb-turnstile-for-elementor-forms-*.json
+cweb-form-protection-turnstile-elementor-*.json
 
 # Local reviewer correspondence (.eml exports etc.)
 *.eml

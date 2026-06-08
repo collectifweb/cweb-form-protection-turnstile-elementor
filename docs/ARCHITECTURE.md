@@ -1,4 +1,4 @@
-# CWeb Turnstile for Elementor Forms — Architecture
+# CWeb Form Protection with Turnstile for Elementor Forms — Architecture
 
 ## Overview
 
@@ -17,7 +17,7 @@ name are kept verbatim.
 ## File layout
 
 ```
-cweb-turnstile-for-elementor-forms.php   Bootstrap: constants, autoloader, plugins_loaded
+cweb-form-protection-turnstile-elementor.php   Bootstrap: constants, autoloader, plugins_loaded
 includes/
   class-plugin.php                       Wires hooks, instantiates the service graph
   class-settings.php                     Settings API page, write-only secret, Elliot import
@@ -32,7 +32,7 @@ includes/
     class-wp-comments.php                 preprocess_comment
 assets/js/turnstile.js                   Explicit render, AJAX reset on failure, expired-callback
 assets/css/admin.css                     Settings page styles
-languages/cweb-turnstile-for-elementor-forms.pot
+languages/cweb-form-protection-turnstile-elementor.pot
 ```
 
 The service objects (`Settings`, `Verifier`, `Widget_Renderer`) are plain

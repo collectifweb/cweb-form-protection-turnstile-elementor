@@ -54,7 +54,7 @@ class WP_Lost_Password extends Abstract_Integration {
 		}
 
 		if ( ! $this->passes() ) {
-			$errors->add( 'cwebts_failed', '<strong>' . esc_html__( 'Error:', 'cweb-turnstile-for-elementor-forms' ) . '</strong> ' . esc_html( $this->settings->get_error_message() ) );
+			$errors->add( 'cwebts_failed', '<strong>' . esc_html__( 'Error:', 'cweb-form-protection-turnstile-elementor' ) . '</strong> ' . esc_html( $this->settings->get_error_message() ) );
 		}
 	}
 }

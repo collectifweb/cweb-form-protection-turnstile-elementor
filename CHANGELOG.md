@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **CWeb Turnstile for Elementor Forms** are documented here.
+All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.0.0] — 2026-06-06
@@ -28,12 +28,12 @@ First public release, prepared for submission to the WordPress.org Plugin Direct
 - Public filters: `cwebts_timeout`, `cwebts_remoteip`, `cwebts_verify_action`,
   `cwebts_verify_hostname`, `cwebts_hostname_allowlist`.
 - Internationalisation: `.pot` template, all strings translatable under the
-  `cweb-turnstile-for-elementor-forms` text domain.
+  `cweb-form-protection-turnstile-elementor` text domain.
 
 ### Notes — WordPress.org compliance
-- Plugin named **CWeb Turnstile for Elementor Forms** (distinctive `CWeb`
+- Plugin named **CWeb Form Protection with Turnstile for Elementor Forms** (distinctive `CWeb`
   identifier first, then the `<feature> for <brand>` pattern), slug
-  `cweb-turnstile-for-elementor-forms`.
+  `cweb-form-protection-turnstile-elementor`.
 - All global identifiers carry a distinctive prefix: `CWEBTS_` constants,
   `cwebts_` functions / hooks / option, `.cwebts-` CSS, `cwebtsOnload` JS global,
   `CWebTS\` PHP namespace. The Cloudflare-required `cf-turnstile` class and

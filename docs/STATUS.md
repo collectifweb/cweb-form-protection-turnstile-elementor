@@ -1,12 +1,28 @@
-# STATUS — CWeb Turnstile for Elementor Forms (handoff / reprise après compaction)
+# STATUS — CWeb Form Protection with Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-06-06 (passe WP.org). Le plugin vit dans
-> `cweb-turnstile-for-elementor-forms/` ; les tests dans `tests/` (racine repo,
+> Dernière mise à jour : 2026-06-08 (réponse review WP.org). Le plugin vit dans
+> `cweb-form-protection-turnstile-elementor/` ; les tests dans `tests/` (racine repo,
 > hors plugin) ; la doc + assets dans `docs/`.
 
+> **MISE À JOUR 2026-06-08 (réponse à la pré-review automatique WP.org)** — La
+> soumission a été *pended* (review `AUTOPREREVIEW`, voir le `.eml` dans `docs/`).
+> Deux points : (1) **nom/slug** — « Turnstile » menait le titre, position qui
+> suggère une affiliation. Renommé **`CWeb Turnstile for Elementor Forms` →
+> `CWeb Form Protection with Turnstile for Elementor Forms`** (slug
+> `cweb-turnstile-for-elementor-forms` → **`cweb-form-protection-turnstile-elementor`**),
+> structure conforme : terme distinctif possédé (« CWeb Form Protection ») en tête,
+> marques tierces après « with »/« for ». Label de menu admin → « CWeb Form
+> Protection ». Banner WP.org refait dans le même sens. Namespace `CWebTS` et slug
+> d'admin `cwebts` conservés (abréviations internes, hors périmètre trademark).
+> (2) **`Requires Plugins: elementor`** ajouté au header (décision : plugin centré
+> Elementor ; protection WP native = bonus). **52/52 tests OK**, zip
+> `cweb-form-protection-turnstile-elementor-1.0.0.zip` reconstruit. Reste : répondre
+> au courriel **en demandant la réservation du nouveau slug**, ré-upload sur « Add
+> your plugin », renommer le repo GitHub `collectifweb/cweb-form-protection-turnstile-elementor`.
+
 > **MISE À JOUR 2026-06-06 (mise aux normes WordPress.org)** — Le plugin a été
-> **renommé `captcha-field-for-turnstile` → `CWeb Turnstile for Elementor Forms`**
-> (slug `cweb-turnstile-for-elementor-forms`, namespace `CWebTS`, préfixe
+> **renommé `captcha-field-for-turnstile` → `CWeb Form Protection with Turnstile for Elementor Forms`**
+> (slug `cweb-form-protection-turnstile-elementor`, namespace `CWebTS`, préfixe
 > `cwebts_`/`CWEBTS_`/`.cwebts-` ; `cf-turnstile` gardé). Repo harmonisé sur le
 > sibling `cweb-product-finder-for-gravity-forms` : `README.md`/`LICENSE`/
 > `CHANGELOG.md` à la racine, `docs/{ARCHITECTURE.md,screenshots/,wp-org-assets/}`,
@@ -14,9 +30,9 @@
 > `docs/cweb-turnstile-...-184143.md`) **corrigé** : tests hors-build, `.distignore`
 > supprimé, `load_plugin_textdomain` retiré, version sur `wp_register_script`,
 > `phpcs:ignore` nonce ciblés, vars uninstall préfixées. `Contributors:
-> alexandreminem`. `php -l` OK, **52/52 tests**, zip `cweb-turnstile-for-elementor-forms-1.0.0.zip` prêt.
-> Repo GitHub `collectifweb/plugin_Turnstile` (PUBLIC) — **à renommer**
-> `CWeb-Turnstile-for-Elementor-Forms`. Reste : screenshots réels, SVN, soumission.
+> alexandreminem`. `php -l` OK, **52/52 tests**, zip `cweb-form-protection-turnstile-elementor-1.0.0.zip` prêt.
+> Repo GitHub à renommer en `collectifweb/cweb-form-protection-turnstile-elementor`.
+> Reste : screenshots réels, SVN, soumission.
 > Les sections ci-dessous gardent l'historique de conception (slugs d'origine).
 
 ## Où en est-on

@@ -240,7 +240,7 @@ function __( $text, $domain = 'default' ) {
 	return $text;
 }
 
-$cwebts_plugin_dir = dirname( __DIR__ ) . '/cweb-turnstile-for-elementor-forms';
+$cwebts_plugin_dir = dirname( __DIR__ ) . '/cweb-form-protection-turnstile-elementor';
 require_once $cwebts_plugin_dir . '/includes/class-settings.php';
 require_once $cwebts_plugin_dir . '/includes/class-verifier.php';
 

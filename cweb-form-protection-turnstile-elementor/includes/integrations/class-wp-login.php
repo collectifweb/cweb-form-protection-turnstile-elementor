@@ -67,7 +67,7 @@ class WP_Login extends Abstract_Integration {
 		if ( ! $this->passes() ) {
 			return new \WP_Error(
 				'cwebts_failed',
-				'<strong>' . esc_html__( 'Error:', 'cweb-turnstile-for-elementor-forms' ) . '</strong> ' . esc_html( $this->settings->get_error_message() )
+				'<strong>' . esc_html__( 'Error:', 'cweb-form-protection-turnstile-elementor' ) . '</strong> ' . esc_html( $this->settings->get_error_message() )
 			);
 		}
 
