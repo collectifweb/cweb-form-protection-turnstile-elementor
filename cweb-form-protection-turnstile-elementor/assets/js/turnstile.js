@@ -74,6 +74,54 @@
 	// Called by the Cloudflare API once it has loaded.
 	window.cwebtsOnload = renderAll;
 
+	// Render widgets inserted AFTER the Cloudflare API loaded — Elementor popups,
+	// lazy-loaded or AJAX-rendered forms. cwebtsOnload fires only once, so without
+	// this a late .cf-turnstile would never render while server-side validation
+	// still runs on submit — a silent block. Debounced: a burst of mutations
+	// schedules a single renderAll (a no-op when nothing new is present, and a
+	// no-op until window.turnstile exists, after which cwebtsOnload covers it).
+	if ( window.MutationObserver && document.body ) {
+		var rescanScheduled = false;
+
+		function scheduleRescan() {
+			if ( rescanScheduled ) {
+				return;
+			}
+			rescanScheduled = true;
+			window.setTimeout( function () {
+				rescanScheduled = false;
+				renderAll();
+			}, 200 );
+		}
+
+		function addsUnrenderedWidget( nodes ) {
+			for ( var i = 0; i < nodes.length; i++ ) {
+				var node = nodes[ i ];
+				if ( 1 !== node.nodeType ) {
+					continue;
+				}
+				if ( node.classList && node.classList.contains( 'cf-turnstile' ) ) {
+					return true;
+				}
+				if ( node.querySelector && node.querySelector( '.cf-turnstile:not([' + RENDERED + '])' ) ) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		var cwebtsObserver = new window.MutationObserver( function ( mutations ) {
+			for ( var i = 0; i < mutations.length; i++ ) {
+				if ( addsUnrenderedWidget( mutations[ i ].addedNodes ) ) {
+					scheduleRescan();
+					return;
+				}
+			}
+		} );
+
+		cwebtsObserver.observe( document.body, { childList: true, subtree: true } );
+	}
+
 	function resetWithin( container ) {
 		if ( ! container || ! container.querySelectorAll ) {
 			return;

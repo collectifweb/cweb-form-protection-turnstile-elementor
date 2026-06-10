@@ -12,6 +12,7 @@ require __DIR__ . '/bootstrap.php';
 
 use CWebTS\Verifier;
 use CWebTS\Settings;
+use CWebTS\Integrations\Elementor_All_Forms;
 
 $tests  = 0;
 $failed = 0;
@@ -189,6 +190,10 @@ $s     = new Settings();
 $clean = $s->sanitize( array( 'protect_login' => '1' ) );
 t( 'checked toggle -> 1', 1 === $clean['protect_login'] );
 t( 'unchecked toggle -> 0', 0 === $clean['protect_comments'] );
+$clean = $s->sanitize( array( 'protect_elementor_all_forms' => '1' ) );
+t( 'elementor all-forms toggle checked -> 1', 1 === $clean['protect_elementor_all_forms'] );
+$clean = $s->sanitize( array() );
+t( 'elementor all-forms default -> 0', 0 === $clean['protect_elementor_all_forms'] );
 $clean = $s->sanitize( array( 'error_message' => '' ) );
 t( 'empty error_message -> default', '' !== $clean['error_message'] );
 
@@ -247,6 +252,61 @@ $s = new Settings();
 $s->import_from_simple_turnstile();
 $saved = get_option( 'cwebts_settings' );
 t( 'unknown language falls back to auto', 'auto' === $saved['language'] );
+
+echo "Elementor all-forms — inject_widget_before_submit()\n";
+$widget = '<div class="elementor-field-group elementor-column elementor-col-100 cwebts-elementor-auto-field"><div class="cf-turnstile cwebts-widget" data-sitekey="site"></div></div>';
+
+$form = '<form class="elementor-form"><div class="elementor-form-fields-wrapper">'
+	. '<div class="elementor-field-group elementor-column elementor-field-type-email"><input></div>'
+	. '<div class="elementor-field-group elementor-column elementor-field-type-submit"><button type="submit">Send</button></div>'
+	. '</div></form>';
+$out = Elementor_All_Forms::inject_widget_before_submit( $form, $widget );
+t( 'widget injected', false !== strpos( $out, 'cwebts-elementor-auto-field' ) );
+t( 'widget placed before the submit group', strpos( $out, 'cwebts-elementor-auto-field' ) < strpos( $out, 'elementor-field-type-submit' ) );
+t( 'widget stays inside the form', strpos( $out, 'cwebts-elementor-auto-field' ) < strpos( $out, '</form>' ) );
+
+$no_submit = '<form class="elementor-form"><div class="elementor-field-group elementor-field-type-text">x</div></form>';
+$out       = Elementor_All_Forms::inject_widget_before_submit( $no_submit, $widget );
+t( 'fallback injects the widget', false !== strpos( $out, 'cwebts-elementor-auto-field' ) );
+t( 'fallback keeps widget before </form>', strpos( $out, 'cwebts-elementor-auto-field' ) < strpos( $out, '</form>' ) );
+
+$no_form = '<div>nothing to protect here</div>';
+t( 'no form -> content unchanged', Elementor_All_Forms::inject_widget_before_submit( $no_form, $widget ) === $no_form );
+
+$already = '<form class="elementor-form"><div class="cf-turnstile cwebts-widget"></div><div class="elementor-field-type-submit"><button>Send</button></div></form>';
+t( 'existing cwebts-widget not duplicated', Elementor_All_Forms::inject_widget_before_submit( $already, $widget ) === $already );
+
+// A stray submit marker OUTSIDE the form must not pull the widget out of it.
+$stray = '<div class="elementor-field-type-submit">decoy</div>'
+	. '<form class="elementor-form"><div class="elementor-field-group elementor-field-type-text">x</div></form>';
+$out = Elementor_All_Forms::inject_widget_before_submit( $stray, $widget );
+t( 'stray submit before form ignored (widget sits after <form)', strpos( $out, 'cwebts-elementor-auto-field' ) > strpos( $out, '<form' ) );
+t( 'widget still lands before </form> despite stray submit', strpos( $out, 'cwebts-elementor-auto-field' ) < strpos( $out, '</form>' ) );
+
+t( 'empty widget html -> content unchanged', Elementor_All_Forms::inject_widget_before_submit( $form, '' ) === $form );
+
+echo "Elementor all-forms — record_has_turnstile_field()\n";
+$rec_with    = new class() {
+	/**
+	 * @param string $key Key.
+	 * @return mixed
+	 */
+	public function get( $key ) {
+		return 'fields' === $key ? array( array( 'type' => 'text' ), array( 'type' => 'turnstile' ) ) : null;
+	}
+};
+$rec_without = new class() {
+	/**
+	 * @param string $key Key.
+	 * @return mixed
+	 */
+	public function get( $key ) {
+		return 'fields' === $key ? array( array( 'type' => 'text' ), array( 'type' => 'email' ) ) : null;
+	}
+};
+t( 'record with turnstile field detected', true === Elementor_All_Forms::record_has_turnstile_field( $rec_with ) );
+t( 'record without turnstile field -> false', false === Elementor_All_Forms::record_has_turnstile_field( $rec_without ) );
+t( 'non-object record -> false', false === Elementor_All_Forms::record_has_turnstile_field( null ) );
 
 echo "\n";
 echo "$tests run, " . ( $tests - $failed ) . " passed, $failed failed\n";

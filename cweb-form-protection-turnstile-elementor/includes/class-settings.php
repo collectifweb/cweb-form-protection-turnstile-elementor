@@ -41,6 +41,7 @@ class Settings {
 			'appearance'           => 'always',
 			'language'             => 'auto',
 			'error_message'        => __( 'Please confirm you are not a robot.', 'cweb-form-protection-turnstile-elementor' ),
+			'protect_elementor_all_forms' => 0,
 			'protect_login'        => 0,
 			'protect_register'     => 0,
 			'protect_lostpassword' => 0,
@@ -201,6 +202,15 @@ class Settings {
 		add_settings_field( 'error_message', __( 'Error message', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_error_message' ), self::PAGE, 'cwebts_appearance' );
 
 		add_settings_section(
+			'cwebts_elementor',
+			__( 'Elementor Pro forms', 'cweb-form-protection-turnstile-elementor' ),
+			array( $this, 'section_elementor_intro' ),
+			self::PAGE
+		);
+
+		add_settings_field( 'protect_elementor_all_forms', __( 'All Elementor Pro forms', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_elementor_all_forms' ), self::PAGE, 'cwebts_elementor' );
+
+		add_settings_section(
 			'cwebts_native',
 			__( 'WordPress forms', 'cweb-form-protection-turnstile-elementor' ),
 			array( $this, 'section_native_intro' ),
@@ -253,7 +263,7 @@ class Settings {
 		$message                 = isset( $input['error_message'] ) ? sanitize_text_field( $input['error_message'] ) : '';
 		$clean['error_message']  = '' !== $message ? $message : $this->defaults()['error_message'];
 
-		foreach ( array( 'protect_login', 'protect_register', 'protect_lostpassword', 'protect_comments' ) as $toggle ) {
+		foreach ( array( 'protect_elementor_all_forms', 'protect_login', 'protect_register', 'protect_lostpassword', 'protect_comments' ) as $toggle ) {
 			$clean[ $toggle ] = empty( $input[ $toggle ] ) ? 0 : 1;
 		}
 
@@ -456,7 +466,32 @@ class Settings {
 	public function section_native_intro() {
 		printf(
 			'<p>%s</p>',
-			esc_html__( 'Enable Turnstile on the built-in WordPress forms. For Elementor Pro forms, add the "Cloudflare Turnstile" field to the specific forms you want to protect.', 'cweb-form-protection-turnstile-elementor' )
+			esc_html__( 'Enable Turnstile on the built-in WordPress forms (login, registration, lost password, comments).', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * Elementor Pro section intro.
+	 *
+	 * @return void
+	 */
+	public function section_elementor_intro() {
+		printf(
+			'<p>%s</p>',
+			esc_html__( 'By default you protect Elementor Pro forms one by one by adding the "Cloudflare Turnstile" field to the forms you choose. Turn the option below on to protect every Elementor Pro form automatically.', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * "All Elementor Pro forms" toggle.
+	 *
+	 * @return void
+	 */
+	public function field_protect_elementor_all_forms() {
+		$this->render_toggle( 'protect_elementor_all_forms', __( 'Protect every Elementor Pro form automatically.', 'cweb-form-protection-turnstile-elementor' ) );
+		printf(
+			'<p class="description">%s</p>',
+			esc_html__( 'When off, only the forms that contain the "Cloudflare Turnstile" field are protected. When on, the widget is added to every Elementor Pro form, just before its submit button. Requires Elementor Pro.', 'cweb-form-protection-turnstile-elementor' )
 		);
 	}
 

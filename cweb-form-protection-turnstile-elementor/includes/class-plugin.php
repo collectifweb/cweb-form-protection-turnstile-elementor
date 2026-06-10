@@ -64,6 +64,7 @@ class Plugin {
 		);
 
 		$this->register_elementor_field();
+		$this->register_elementor_integrations();
 		$this->register_native_integrations();
 	}
 
@@ -87,6 +88,18 @@ class Plugin {
 				$registrar->register( new Elementor\Turnstile_Field( $settings, $verifier, $renderer ) );
 			}
 		);
+	}
+
+	/**
+	 * Instantiate the optional "protect all Elementor Pro forms" integration.
+	 *
+	 * Self-registers its hooks only when the toggle is on and keys are configured;
+	 * inert (and safe) when Elementor Pro is absent.
+	 *
+	 * @return void
+	 */
+	private function register_elementor_integrations() {
+		new Integrations\Elementor_All_Forms( $this->settings, $this->verifier, $this->renderer );
 	}
 
 	/**

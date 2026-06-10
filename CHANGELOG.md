@@ -3,6 +3,26 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.0] — 2026-06-10
+
+### Added
+- **Optional "Protect all Elementor Pro forms" setting** (off by default). When
+  enabled, the Turnstile widget is injected into every Elementor Pro form
+  (server-side, just before the submit button, always inside the `<form>`) and
+  every submission is verified through the global `elementor_pro/forms/validation`
+  hook — without adding the per-form field. Forms that already carry the
+  per-form field are skipped (no double widget, no double check). The per-form
+  field remains the default and the product's differentiator.
+- Late-rendered forms (Elementor popups, lazy-load, AJAX) are covered by a
+  debounced `MutationObserver` plus a front-end-wide asset enqueue while the
+  option is active, so a widget never goes missing while validation still runs.
+
+### Notes
+- New code lives in `includes/integrations/class-elementor-all-forms.php` with
+  pure, unit-tested helpers (`inject_widget_before_submit()`,
+  `record_has_turnstile_field()`). No hard Elementor Pro dependency: the hooks
+  stay inert without Elementor Pro.
+
 ## [1.0.1] — 2026-06-10
 
 ### Fixed

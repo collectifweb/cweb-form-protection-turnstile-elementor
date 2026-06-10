@@ -243,6 +243,10 @@ function __( $text, $domain = 'default' ) {
 $cwebts_plugin_dir = dirname( __DIR__ ) . '/cweb-form-protection-turnstile-elementor';
 require_once $cwebts_plugin_dir . '/includes/class-settings.php';
 require_once $cwebts_plugin_dir . '/includes/class-verifier.php';
+// Pure static helpers exercised below; the parent must be loaded first. Neither is
+// instantiated here, so the Elementor Pro type-hints never need to resolve.
+require_once $cwebts_plugin_dir . '/includes/integrations/class-abstract-integration.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-elementor-all-forms.php';
 
 /**
  * Reset test state between scenarios.

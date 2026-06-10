@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.0.0\n"
+"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/collectifweb/cweb-form-protection-"
 "turnstile-elementor\n"
 "POT-Creation-Date: 2026-06-06 14:47-0400\n"
@@ -127,11 +127,36 @@ msgid ""
 "target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare dashboard</a>."
 msgstr ""
 
-#: includes/class-settings.php:459
+#: includes/class-settings.php:206
+msgid "Elementor Pro forms"
+msgstr ""
+
+#: includes/class-settings.php:211
+msgid "All Elementor Pro forms"
+msgstr ""
+
+#: includes/class-settings.php:469
 msgid ""
-"Enable Turnstile on the built-in WordPress forms. For Elementor Pro forms, "
-"add the \"Cloudflare Turnstile\" field to the specific forms you want to "
-"protect."
+"Enable Turnstile on the built-in WordPress forms (login, registration, lost "
+"password, comments)."
+msgstr ""
+
+#: includes/class-settings.php:481
+msgid ""
+"By default you protect Elementor Pro forms one by one by adding the "
+"\"Cloudflare Turnstile\" field to the forms you choose. Turn the option below "
+"on to protect every Elementor Pro form automatically."
+msgstr ""
+
+#: includes/class-settings.php:491
+msgid "Protect every Elementor Pro form automatically."
+msgstr ""
+
+#: includes/class-settings.php:494
+msgid ""
+"When off, only the forms that contain the \"Cloudflare Turnstile\" field are "
+"protected. When on, the widget is added to every Elementor Pro form, just "
+"before its submit button. Requires Elementor Pro."
 msgstr ""
 
 #: includes/class-settings.php:487

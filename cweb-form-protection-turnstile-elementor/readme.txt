@@ -5,7 +5,7 @@ Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,11 +15,12 @@ Add Cloudflare Turnstile to your forms — with a per-form field for Elementor P
 
 This plugin adds [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — a free, privacy-friendly CAPTCHA alternative — to your WordPress site.
 
-Its key difference from other Turnstile plugins is **per-form control for Elementor Pro**: instead of toggling Turnstile globally for every Elementor form, you add a **"Cloudflare Turnstile" field** to the specific forms you want to protect, exactly like Elementor's built-in reCAPTCHA field. Forms without the field are left untouched.
+Its key difference from other Turnstile plugins is **per-form control for Elementor Pro**: instead of toggling Turnstile globally for every Elementor form, you add a **"Cloudflare Turnstile" field** to the specific forms you want to protect, exactly like Elementor's built-in reCAPTCHA field. Forms without the field are left untouched. If you prefer the all-at-once approach, an optional setting protects **every** Elementor Pro form automatically.
 
 = Features =
 
 * **Per-form Turnstile field for Elementor Pro Forms** — drag it into the forms you choose.
+* **Optional "all Elementor Pro forms" switch** — protect every Elementor Pro form at once, without adding the field to each one (off by default).
 * Optional protection for the built-in WordPress forms:
   * Login
   * Registration
@@ -31,7 +32,7 @@ Its key difference from other Turnstile plugins is **per-form control for Elemen
 * Secure-by-default behaviour: missing/invalid tokens are always blocked; the
   behaviour when Cloudflare itself is unreachable is configurable.
 * Write-only secret key (never displayed or sent to the browser).
-* Lightweight: the Cloudflare script loads only on pages that actually show a widget.
+* Lightweight: in the default per-form mode, the Cloudflare script loads only on pages that actually show a widget. (The optional "all forms" mode loads it across the front end so late-loaded forms are covered.)
 
 = Requirements =
 
@@ -69,7 +70,7 @@ Not affiliated with Cloudflare, Inc. or Elementor Ltd. "Cloudflare" and "Turnsti
 
 = Does it protect every Elementor form automatically? =
 
-No — and that is the point. You add the Turnstile field only to the forms you want to protect. Forms without the field are not affected. (An automatic "all forms" mode may be added in a future version.)
+By default, no — and that is the point. You add the Turnstile field only to the forms you want to protect, and forms without the field are left untouched. If you prefer, turn on **Settings → CWeb Form Protection → Elementor Pro forms → "All Elementor Pro forms"** to protect every Elementor Pro form automatically, without adding the field to each one.
 
 = Does it work without Elementor Pro? =
 
@@ -95,6 +96,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 == Changelog ==
 
+= 1.1.0 =
+* New: optional "Protect all Elementor Pro forms" setting (off by default). When enabled, the Turnstile widget is added to every Elementor Pro form automatically — including forms loaded in popups or via AJAX — without adding the per-form field. The per-form field remains the default.
+
 = 1.0.1 =
 * Fix: the Cloudflare Turnstile widget now renders on the WooCommerce "Lost password" form (/my-account/lost-password/). Previously the widget did not appear and every password reset was rejected.
 
@@ -102,6 +106,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Adds an optional setting to protect all Elementor Pro forms at once. Existing setups are unchanged: the option is off by default.
 
 = 1.0.0 =
 Initial release.
