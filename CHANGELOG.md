@@ -3,6 +3,16 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.1] — 2026-06-10
+
+### Fixed
+- **WooCommerce "Lost password" form.** The Turnstile widget now renders on
+  `/my-account/lost-password/`. WooCommerce replaces the core form with its own
+  (firing `woocommerce_lostpassword_form` for display) while still validating
+  through `lostpassword_post`; without the display hook the widget never
+  appeared and every reset was rejected. Added `woocommerce_lostpassword_form`
+  to the lost-password integration. No change to validation.
+
 ## [1.0.0] — 2026-06-06
 
 First public release, prepared for submission to the WordPress.org Plugin Directory.

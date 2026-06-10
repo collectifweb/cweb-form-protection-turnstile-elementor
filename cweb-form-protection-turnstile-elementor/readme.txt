@@ -5,7 +5,7 @@ Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 2. The "Cloudflare Turnstile" field inside an Elementor Pro form.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: the Cloudflare Turnstile widget now renders on the WooCommerce "Lost password" form (/my-account/lost-password/). Previously the widget did not appear and every password reset was rejected.
 
 = 1.0.0 =
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
