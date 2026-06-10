@@ -91,6 +91,7 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 1. The settings page (keys, appearance, WordPress form toggles).
 2. The "Cloudflare Turnstile" field inside an Elementor Pro form.
+3. The Turnstile widget displayed on a protected form.
 
 == Changelog ==
 
