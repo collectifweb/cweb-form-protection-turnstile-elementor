@@ -16,6 +16,10 @@ vendor/
 *.log
 *.zip
 
+# Outil de déploiement SVN + sa copie de travail (perso, on ne les expose pas)
+docs/svn-deploy.sh
+.svn-wporg/
+
 # WP.org Plugin Check reports (diagnostic exports)
 cweb-form-protection-turnstile-elementor-*.json
 
