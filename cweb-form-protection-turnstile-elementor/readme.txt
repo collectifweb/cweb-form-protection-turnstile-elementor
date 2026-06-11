@@ -5,7 +5,7 @@ Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,10 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 == Changelog ==
 
+= 1.1.1 =
+* Fix: replying to a comment from the WordPress admin (the `replyto-comment` AJAX action) was blocked when "Protect comments" was enabled. WordPress builds those replies server-side with no Turnstile widget, so no token is ever sent. Moderators now skip the check in the admin AJAX context; the public comment form stays protected.
+* Fix: a widget hitting a persistent render error (for example a site key restricted to another domain) retried forever, flooding Cloudflare with failed requests and flickering. It now retries a couple of times to recover from a transient network glitch, then stops; a successful challenge clears the counter. No change to server-side verification.
+
 = 1.1.0 =
 * New: optional "Protect all Elementor Pro forms" setting (off by default). When enabled, the Turnstile widget is added to every Elementor Pro form automatically — including forms loaded in popups or via AJAX — without adding the per-form field. The per-form field remains the default.
 
@@ -106,6 +110,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Fixes comment replies from the WordPress admin being blocked when comment protection is on (the public form is unaffected), and stops a failed widget from retrying Cloudflare indefinitely.
 
 = 1.1.0 =
 Adds an optional setting to protect all Elementor Pro forms at once. Existing setups are unchanged: the option is off by default.

@@ -3,6 +3,27 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.1] — 2026-06-10
+
+### Fixed
+- **Comment replies from the WordPress admin.** With "Protect comments" enabled,
+  replying to a comment from the dashboard or admin bar (the `replyto-comment`
+  AJAX action) was rejected with the challenge error: WordPress builds those
+  replies server-side without rendering a Turnstile widget, so no token is ever
+  sent, yet `wp_new_comment()` still runs `preprocess_comment`. Moderators
+  (`current_user_can( 'moderate_comments' )`) now skip the check in the admin
+  AJAX context (`wp_doing_ajax()`). The public comment form still renders the
+  widget and is verified exactly as before.
+- **Unbounded widget auto-retry.** On a persistent render error (e.g. a site key
+  locked to another domain), the Turnstile widget retried indefinitely — a flood
+  of 400s to Cloudflare and a widget flickering roughly twice a second. The widget
+  now renders with `retry: 'never'` so the plugin owns the retry budget: the
+  `error-callback` resets the widget at most twice to ride out a transient network
+  hiccup, then stops (no reset = no re-challenge) and Turnstile shows its default
+  error state. A successful challenge resets the counter, so errors spread across a
+  long session never lock out a legitimate visitor. No change to server-side
+  verification.
+
 ## [1.1.0] — 2026-06-10
 
 ### Added

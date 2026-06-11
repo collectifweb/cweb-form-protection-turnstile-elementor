@@ -12,7 +12,9 @@ require __DIR__ . '/bootstrap.php';
 
 use CWebTS\Verifier;
 use CWebTS\Settings;
+use CWebTS\Widget_Renderer;
 use CWebTS\Integrations\Elementor_All_Forms;
+use CWebTS\Integrations\WP_Comments;
 
 $tests  = 0;
 $failed = 0;
@@ -307,6 +309,68 @@ $rec_without = new class() {
 t( 'record with turnstile field detected', true === Elementor_All_Forms::record_has_turnstile_field( $rec_with ) );
 t( 'record without turnstile field -> false', false === Elementor_All_Forms::record_has_turnstile_field( $rec_without ) );
 t( 'non-object record -> false', false === Elementor_All_Forms::record_has_turnstile_field( null ) );
+
+echo "WP_Comments — validate() bypass scoping\n";
+
+/**
+ * Build a WP_Comments integration against the current settings.
+ *
+ * @return WP_Comments
+ */
+function tf_comments() {
+	$settings = new Settings();
+	return new WP_Comments( $settings, new Verifier( $settings ), new Widget_Renderer( $settings ) );
+}
+
+/**
+ * Run validate() and report whether it blocked (wp_die) the submission.
+ *
+ * @param WP_Comments $integration Integration.
+ * @param array       $commentdata Comment data.
+ * @return bool True when the submission was blocked.
+ */
+function tf_comment_blocked( $integration, $commentdata = array() ) {
+	try {
+		$integration->validate( $commentdata );
+		return false;
+	} catch ( \CWebTS_WPDie_Exception $e ) {
+		return true;
+	}
+}
+
+// Public comment, no token -> blocked (front-end protection intact).
+tf_reset();
+t( 'public comment without token is blocked', true === tf_comment_blocked( tf_comments() ) );
+
+// Public comment with a valid token -> accepted.
+tf_reset();
+$_POST['cf-turnstile-response']  = 'tok';
+$GLOBALS['__tf']['http']['body'] = '{"success":true}';
+t( 'public comment with valid token passes', false === tf_comment_blocked( tf_comments() ) );
+
+// Pingbacks/trackbacks are never challenged.
+tf_reset();
+t( 'pingback is never blocked', false === tf_comment_blocked( tf_comments(), array( 'comment_type' => 'pingback' ) ) );
+
+// Moderator reply via the replyto-comment AJAX action -> bypass.
+tf_reset();
+$GLOBALS['__tf']['doing_ajax']                = true;
+$GLOBALS['__tf']['caps']['moderate_comments'] = true;
+$_REQUEST['action']                           = 'replyto-comment';
+t( 'moderator replyto-comment AJAX bypasses the check', false === tf_comment_blocked( tf_comments() ) );
+
+// Same moderator, DIFFERENT AJAX action -> still checked (bypass is scoped).
+tf_reset();
+$GLOBALS['__tf']['doing_ajax']                = true;
+$GLOBALS['__tf']['caps']['moderate_comments'] = true;
+$_REQUEST['action']                           = 'some_other_action';
+t( 'moderator on another AJAX action is still blocked', true === tf_comment_blocked( tf_comments() ) );
+
+// replyto-comment action but WITHOUT the capability -> still checked.
+tf_reset();
+$GLOBALS['__tf']['doing_ajax'] = true;
+$_REQUEST['action']            = 'replyto-comment';
+t( 'replyto-comment without moderate_comments is still blocked', true === tf_comment_blocked( tf_comments() ) );
 
 echo "\n";
 echo "$tests run, " . ( $tests - $failed ) . " passed, $failed failed\n";

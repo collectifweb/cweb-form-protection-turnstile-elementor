@@ -57,6 +57,21 @@ class WP_Comments extends Abstract_Integration {
 			return $commentdata;
 		}
 
+		// Replies posted from the dashboard or admin bar go through the
+		// replyto-comment AJAX action: WordPress builds the comment server-side
+		// without ever rendering a Turnstile widget, so no token is sent. Yet
+		// wp_new_comment() still runs preprocess_comment, so without this bypass
+		// every moderator reply is rejected with the challenge error. The skip is
+		// scoped as tightly as the bug: the replyto-comment AJAX action performed
+		// by a user who can moderate comments (the core handler has already checked
+		// its own nonce by the time we run). The public comment form, which does
+		// render a widget, is unaffected.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Action read only to scope the bypass; the core replyto-comment handler verifies the nonce.
+		$ajax_action = isset( $_REQUEST['action'] ) ? sanitize_key( wp_unslash( $_REQUEST['action'] ) ) : '';
+		if ( wp_doing_ajax() && 'replyto-comment' === $ajax_action && current_user_can( 'moderate_comments' ) ) {
+			return $commentdata;
+		}
+
 		if ( ! $this->passes() ) {
 			wp_die(
 				esc_html( $this->settings->get_error_message() ),

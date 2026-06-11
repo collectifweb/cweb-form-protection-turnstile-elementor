@@ -22,9 +22,11 @@ define( 'CWEBTS_BASENAME', 'cft/cft.php' );
  * @var array
  */
 $GLOBALS['__tf'] = array(
-	'options' => array(),
-	'filters' => array(),
-	'http'    => array(
+	'options'    => array(),
+	'filters'    => array(),
+	'doing_ajax' => false,
+	'caps'       => array(),
+	'http'       => array(
 		'wp_error' => false,
 		'code'     => 200,
 		'body'     => '{"success":true}',
@@ -240,13 +242,83 @@ function __( $text, $domain = 'default' ) {
 	return $text;
 }
 
+/**
+ * Stub esc_html.
+ *
+ * @param string $text Text.
+ * @return string
+ */
+function esc_html( $text ) {
+	return $text;
+}
+
+/**
+ * Stub esc_html__.
+ *
+ * @param string $text   Text.
+ * @param string $domain Domain.
+ * @return string
+ */
+function esc_html__( $text, $domain = 'default' ) {
+	return $text;
+}
+
+/**
+ * Stub sanitize_key.
+ *
+ * @param string $key Key.
+ * @return string
+ */
+function sanitize_key( $key ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $key ) );
+}
+
+/**
+ * Stub wp_doing_ajax (controlled by $GLOBALS['__tf']['doing_ajax']).
+ *
+ * @return bool
+ */
+function wp_doing_ajax() {
+	return ! empty( $GLOBALS['__tf']['doing_ajax'] );
+}
+
+/**
+ * Stub current_user_can (capabilities live in $GLOBALS['__tf']['caps']).
+ *
+ * @param string $capability Capability.
+ * @return bool
+ */
+function current_user_can( $capability ) {
+	return ! empty( $GLOBALS['__tf']['caps'][ $capability ] );
+}
+
+/**
+ * Test double thrown by wp_die() so a blocked submission is observable.
+ */
+class CWebTS_WPDie_Exception extends \Exception {}
+
+/**
+ * Stub wp_die: throw instead of halting so tests can assert a block.
+ *
+ * @param string $message Message.
+ * @param string $title   Title.
+ * @param array  $args    Args.
+ * @return void
+ * @throws CWebTS_WPDie_Exception Always, to signal a blocked request.
+ */
+function wp_die( $message = '', $title = '', $args = array() ) {
+	throw new CWebTS_WPDie_Exception( is_string( $message ) ? $message : 'wp_die' );
+}
+
 $cwebts_plugin_dir = dirname( __DIR__ ) . '/cweb-form-protection-turnstile-elementor';
 require_once $cwebts_plugin_dir . '/includes/class-settings.php';
 require_once $cwebts_plugin_dir . '/includes/class-verifier.php';
+require_once $cwebts_plugin_dir . '/includes/class-widget-renderer.php';
 // Pure static helpers exercised below; the parent must be loaded first. Neither is
 // instantiated here, so the Elementor Pro type-hints never need to resolve.
 require_once $cwebts_plugin_dir . '/includes/integrations/class-abstract-integration.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-elementor-all-forms.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-comments.php';
 
 /**
  * Reset test state between scenarios.
@@ -255,8 +327,11 @@ require_once $cwebts_plugin_dir . '/includes/integrations/class-elementor-all-fo
  * @return void
  */
 function tf_reset( $options = array() ) {
-	$GLOBALS['__tf']['filters'] = array();
-	$GLOBALS['__tf']['http']    = array(
+	$GLOBALS['__tf']['filters']    = array();
+	$GLOBALS['__tf']['doing_ajax'] = false;
+	$GLOBALS['__tf']['caps']       = array();
+	unset( $_POST['cf-turnstile-response'], $_REQUEST['action'] );
+	$GLOBALS['__tf']['http']       = array(
 		'wp_error' => false,
 		'code'     => 200,
 		'body'     => '{"success":true}',

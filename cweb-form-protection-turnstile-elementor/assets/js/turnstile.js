@@ -21,6 +21,18 @@
 			size: el.getAttribute( 'data-size' ) || 'flexible',
 			appearance: el.getAttribute( 'data-appearance' ) || 'always',
 			language: el.getAttribute( 'data-language' ) || 'auto',
+			// Own the retry budget instead of relying on Turnstile's implicit
+			// auto-retry: 'never' means a failed challenge is only re-attempted when
+			// WE call turnstile.reset(), which error-callback does a bounded number
+			// of times below. Without this, a persistent failure could keep retrying
+			// on Cloudflare's own schedule regardless of our cap.
+			retry: 'never',
+			callback: function () {
+				// A successful token proves the widget recovered, so clear the error
+				// budget: errors spread across a long session must never end up
+				// locking out a legitimate visitor.
+				el.__tfErrors = 0;
+			},
 			'expired-callback': function () {
 				safeReset( el );
 			},
@@ -28,9 +40,19 @@
 				safeReset( el );
 			},
 			'error-callback': function () {
-				// Returning true lets Turnstile auto-retry; reset clears stale state.
-				safeReset( el );
-				return true;
+				// A persistent hard failure (e.g. a site key locked to another
+				// domain) would otherwise retry forever — a flood of 400s to
+				// Cloudflare and a flickering widget. With retry:'never' above, a
+				// reset is the only thing that re-attempts the challenge: ride out a
+				// transient network hiccup with a couple of resets, then stop (no
+				// reset = no re-challenge). A successful token (callback above)
+				// clears the count. Once we stop, Turnstile shows its default error
+				// state so the failure stays visible to the user.
+				var n = ( el.__tfErrors || 0 ) + 1;
+				el.__tfErrors = n;
+				if ( n < 3 ) {
+					safeReset( el );
+				}
 			}
 		};
 

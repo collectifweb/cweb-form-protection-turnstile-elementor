@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.1.0\n"
+"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/collectifweb/cweb-form-protection-"
 "turnstile-elementor\n"
-"POT-Creation-Date: 2026-06-06 14:47-0400\n"
+"POT-Creation-Date: 2026-06-10 22:41-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: includes/integrations/class-wp-comments.php:63
+#: includes/integrations/class-wp-comments.php:78
 msgid "Comment Submission Failure"
 msgstr ""
 
