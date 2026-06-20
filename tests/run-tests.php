@@ -15,6 +15,10 @@ use CWebTS\Settings;
 use CWebTS\Widget_Renderer;
 use CWebTS\Integrations\Elementor_All_Forms;
 use CWebTS\Integrations\WP_Comments;
+use CWebTS\Integrations\WC_Checkout;
+use CWebTS\Integrations\WC_Login;
+use CWebTS\Integrations\WC_Register;
+use CWebTS\Integrations\WC_Account;
 
 $tests  = 0;
 $failed = 0;
@@ -371,6 +375,151 @@ tf_reset();
 $GLOBALS['__tf']['doing_ajax'] = true;
 $_REQUEST['action']            = 'replyto-comment';
 t( 'replyto-comment without moderate_comments is still blocked', true === tf_comment_blocked( tf_comments() ) );
+
+echo "WooCommerce — validate() decisions\n";
+
+/**
+ * Build a WooCommerce integration of the given class against current settings.
+ *
+ * @param string $class Fully-qualified integration class name.
+ * @return \CWebTS\Integrations\Abstract_Integration
+ */
+function tf_wc_make( $class ) {
+	$settings = new Settings();
+	return new $class( $settings, new Verifier( $settings ), new Widget_Renderer( $settings ) );
+}
+
+// WC_Login (filter, returns WP_Error, raw message).
+tf_reset();
+$login = tf_wc_make( WC_Login::class );
+$out   = $login->validate( new WP_Error() );
+t( 'WC login without token returns a WP_Error', is_wp_error( $out ) && 'cwebts_failed' === $out->get_error_code() );
+t( 'WC login message is raw (no "Error:" prefix)', false === strpos( $out->get_error_message(), 'Error:' ) );
+
+tf_reset();
+$_POST['cf-turnstile-response']  = 'tok';
+$GLOBALS['__tf']['http']['body'] = '{"success":true}';
+$login     = tf_wc_make( WC_Login::class );
+$untouched = new WP_Error();
+$out       = $login->validate( $untouched );
+t( 'WC login with valid token leaves validation unchanged', $out === $untouched && '' === $out->get_error_code() );
+
+// WC_Register (filter, 4 args, returns WP_Error).
+tf_reset();
+$reg = tf_wc_make( WC_Register::class );
+$out = $reg->validate( new WP_Error(), 'user', 'pass', 'a@b.c' );
+t( 'WC register without token returns a WP_Error', is_wp_error( $out ) && 'cwebts_failed' === $out->get_error_code() );
+
+tf_reset();
+$_POST['cf-turnstile-response']  = 'tok';
+$GLOBALS['__tf']['http']['body'] = '{"success":true}';
+$reg       = tf_wc_make( WC_Register::class );
+$untouched = new WP_Error();
+$out       = $reg->validate( $untouched, 'user', 'pass', 'a@b.c' );
+t( 'WC register with valid token leaves validation unchanged', $out === $untouched && '' === $out->get_error_code() );
+
+// WC_Account (action, 2 args, mutates the WP_Error).
+tf_reset();
+$acct   = tf_wc_make( WC_Account::class );
+$errors = new WP_Error();
+$acct->validate( $errors, null );
+t( 'WC account without token adds an error', 'cwebts_failed' === $errors->get_error_code() );
+
+tf_reset();
+$_POST['cf-turnstile-response']  = 'tok';
+$GLOBALS['__tf']['http']['body'] = '{"success":true}';
+$acct   = tf_wc_make( WC_Account::class );
+$errors = new WP_Error();
+$acct->validate( $errors, null );
+t( 'WC account with valid token adds no error', '' === $errors->get_error_code() );
+
+// WC_Checkout (action, wc_add_notice, raw message).
+tf_reset();
+$checkout = tf_wc_make( WC_Checkout::class );
+$checkout->validate();
+t( 'WC checkout without token adds one error notice', 1 === count( $GLOBALS['__tf']['wc_notices'] ) && 'error' === $GLOBALS['__tf']['wc_notices'][0]['type'] );
+t( 'WC checkout notice is raw (no "Error:" prefix)', false === strpos( $GLOBALS['__tf']['wc_notices'][0]['message'], 'Error:' ) );
+
+tf_reset();
+$_POST['cf-turnstile-response']  = 'tok';
+$GLOBALS['__tf']['http']['body'] = '{"success":true}';
+$checkout = tf_wc_make( WC_Checkout::class );
+$checkout->validate();
+t( 'WC checkout with valid token adds no notice', 0 === count( $GLOBALS['__tf']['wc_notices'] ) );
+
+echo "WooCommerce — context separation (cwebts_verify_action on)\n";
+tf_reset();
+$_POST['cf-turnstile-response']                     = 'tok';
+$GLOBALS['__tf']['http']['body']                    = '{"success":true,"action":"wc_checkout"}';
+$GLOBALS['__tf']['filters']['cwebts_verify_action'] = true;
+$checkout = tf_wc_make( WC_Checkout::class );
+$checkout->validate();
+t( 'token issued for wc_checkout passes the checkout', 0 === count( $GLOBALS['__tf']['wc_notices'] ) );
+$login = tf_wc_make( WC_Login::class );
+$out   = $login->validate( new WP_Error() );
+t( 'same token is rejected on the login (action mismatch)', is_wp_error( $out ) && 'cwebts_failed' === $out->get_error_code() );
+
+echo "WooCommerce — hook registration (gating + scoping)\n";
+
+/**
+ * Whether the captured hook list contains a given tag.
+ *
+ * @param string $tag Hook tag.
+ * @return bool
+ */
+function tf_has_hook( $tag ) {
+	foreach ( $GLOBALS['__tf']['hooks'] as $hook ) {
+		if ( $tag === $hook['tag'] ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Return the captured hook entry for a tag (kind + priority + args), or null.
+ *
+ * @param string $tag Hook tag.
+ * @return array|null
+ */
+function tf_hook( $tag ) {
+	foreach ( $GLOBALS['__tf']['hooks'] as $hook ) {
+		if ( $tag === $hook['tag'] ) {
+			return $hook;
+		}
+	}
+	return null;
+}
+
+// Toggle OFF -> no hooks.
+tf_reset();
+tf_wc_make( WC_Checkout::class );
+t( 'WC checkout disabled registers no hooks', 0 === count( $GLOBALS['__tf']['hooks'] ) );
+
+// Toggle ON (keys configured) -> render outside the AJAX fragment + validation.
+tf_reset( array( 'protect_wc_checkout' => 1 ) );
+tf_wc_make( WC_Checkout::class );
+$h = tf_hook( 'woocommerce_review_order_before_submit' );
+t( 'WC checkout renders on review_order_before_submit (action, next to the button)', $h && 'action' === $h['kind'] );
+t( 'WC checkout validates on checkout_process (action)', null !== ( $h = tf_hook( 'woocommerce_checkout_process' ) ) && 'action' === $h['kind'] );
+
+tf_reset( array( 'protect_wc_login' => 1 ) );
+tf_wc_make( WC_Login::class );
+$h = tf_hook( 'woocommerce_process_login_errors' );
+t( 'WC login validates on process_login_errors (filter, 3 args)', $h && 'filter' === $h['kind'] && 3 === $h['args'] );
+
+// Register must use the scoped filter, NOT woocommerce_register_post (which also
+// fires for account creation during checkout and programmatic customer creation).
+tf_reset( array( 'protect_wc_register' => 1 ) );
+tf_wc_make( WC_Register::class );
+$h = tf_hook( 'woocommerce_process_registration_errors' );
+t( 'WC register validates on scoped process_registration_errors (filter, 4 args)', $h && 'filter' === $h['kind'] && 4 === $h['args'] );
+t( 'WC register does NOT hook woocommerce_register_post (no checkout false-block)', false === tf_has_hook( 'woocommerce_register_post' ) );
+
+tf_reset( array( 'protect_wc_account' => 1 ) );
+tf_wc_make( WC_Account::class );
+$h = tf_hook( 'woocommerce_save_account_details_errors' );
+t( 'WC account validates on save_account_details_errors (action, 2 args)', $h && 'action' === $h['kind'] && 2 === $h['args'] );
 
 echo "\n";
 echo "$tests run, " . ( $tests - $failed ) . " passed, $failed failed\n";

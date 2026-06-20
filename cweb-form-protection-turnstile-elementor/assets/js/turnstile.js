@@ -159,6 +159,27 @@
 	// calls preventDefault(). Forms are tracked FIFO; correlation across truly
 	// simultaneous submissions is best-effort.
 	if ( window.jQuery ) {
+		// WooCommerce replaces the #payment block (which holds the checkout
+		// widget) on every update_order_review, then fires updated_checkout once
+		// the new fragments are in the DOM. Re-render immediately so the widget is
+		// never left unrendered between the AJAX swap and the MutationObserver's
+		// debounced rescan — closing the empty-token window at the "Place order"
+		// click. renderAll() only touches widgets without data-tf-rendered, so
+		// this is a no-op for anything already rendered.
+		window.jQuery( document.body ).on( 'updated_checkout', function () {
+			renderAll();
+		} );
+
+		// A FAILED checkout submission (required field, terms, payment, gateway…)
+		// keeps the shopper on the same page via AJAX WITHOUT replacing #payment,
+		// so the token already spent by woocommerce_checkout_process is still in
+		// the field. WooCommerce fires checkout_error after such a failure; reset
+		// the checkout widget(s) so a corrected resubmit gets a fresh token instead
+		// of failing Cloudflare with "timeout-or-duplicate".
+		window.jQuery( document.body ).on( 'checkout_error', function () {
+			resetWithin( document.querySelector( 'form.checkout' ) );
+		} );
+
 		var pendingForms = [];
 
 		function trackForm( form ) {

@@ -66,6 +66,7 @@ class Plugin {
 		$this->register_elementor_field();
 		$this->register_elementor_integrations();
 		$this->register_native_integrations();
+		$this->register_woocommerce_integrations();
 	}
 
 	/**
@@ -115,6 +116,23 @@ class Plugin {
 		new Integrations\WP_Register( $this->settings, $this->verifier, $this->renderer );
 		new Integrations\WP_Lost_Password( $this->settings, $this->verifier, $this->renderer );
 		new Integrations\WP_Comments( $this->settings, $this->verifier, $this->renderer );
+	}
+
+	/**
+	 * Instantiate the WooCommerce form integrations.
+	 *
+	 * Each one self-registers its hooks only when its toggle is on and keys are
+	 * configured, and stays inert when WooCommerce is absent (its hooks never
+	 * fire). Lost password and product reviews keep their own dedicated toggles
+	 * (protect_lostpassword, protect_comments).
+	 *
+	 * @return void
+	 */
+	private function register_woocommerce_integrations() {
+		new Integrations\WC_Checkout( $this->settings, $this->verifier, $this->renderer );
+		new Integrations\WC_Login( $this->settings, $this->verifier, $this->renderer );
+		new Integrations\WC_Register( $this->settings, $this->verifier, $this->renderer );
+		new Integrations\WC_Account( $this->settings, $this->verifier, $this->renderer );
 	}
 
 	/**

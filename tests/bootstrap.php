@@ -26,6 +26,8 @@ $GLOBALS['__tf'] = array(
 	'filters'    => array(),
 	'doing_ajax' => false,
 	'caps'       => array(),
+	'hooks'      => array(),
+	'wc_notices' => array(),
 	'http'       => array(
 		'wp_error' => false,
 		'code'     => 200,
@@ -75,6 +77,33 @@ class WP_Error {
 			return isset( $messages[0] ) ? $messages[0] : '';
 		}
 		return '';
+	}
+
+	/**
+	 * First error code (empty string when none).
+	 *
+	 * @return string
+	 */
+	public function get_error_code() {
+		foreach ( $this->errors as $code => $messages ) {
+			return $code;
+		}
+		return '';
+	}
+
+	/**
+	 * All error messages, flattened.
+	 *
+	 * @return array
+	 */
+	public function get_error_messages() {
+		$all = array();
+		foreach ( $this->errors as $messages ) {
+			foreach ( $messages as $message ) {
+				$all[] = $message;
+			}
+		}
+		return $all;
 	}
 }
 
@@ -310,6 +339,59 @@ function wp_die( $message = '', $title = '', $args = array() ) {
 	throw new CWebTS_WPDie_Exception( is_string( $message ) ? $message : 'wp_die' );
 }
 
+/**
+ * Stub add_action: record the hook so tests can assert what an integration
+ * registers (and, just as importantly, what it does NOT register).
+ *
+ * @param string   $tag           Hook tag.
+ * @param callable $callback      Callback.
+ * @param int      $priority      Priority.
+ * @param int      $accepted_args Accepted args.
+ * @return bool
+ */
+function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+	$GLOBALS['__tf']['hooks'][] = array(
+		'kind'     => 'action',
+		'tag'      => $tag,
+		'priority' => $priority,
+		'args'     => $accepted_args,
+	);
+	return true;
+}
+
+/**
+ * Stub add_filter (same capture as add_action).
+ *
+ * @param string   $tag           Hook tag.
+ * @param callable $callback      Callback.
+ * @param int      $priority      Priority.
+ * @param int      $accepted_args Accepted args.
+ * @return bool
+ */
+function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+	$GLOBALS['__tf']['hooks'][] = array(
+		'kind'     => 'filter',
+		'tag'      => $tag,
+		'priority' => $priority,
+		'args'     => $accepted_args,
+	);
+	return true;
+}
+
+/**
+ * Stub wc_add_notice: capture WooCommerce notices so tests can assert them.
+ *
+ * @param string $message Notice message.
+ * @param string $type    Notice type.
+ * @return void
+ */
+function wc_add_notice( $message, $type = 'success' ) {
+	$GLOBALS['__tf']['wc_notices'][] = array(
+		'message' => $message,
+		'type'    => $type,
+	);
+}
+
 $cwebts_plugin_dir = dirname( __DIR__ ) . '/cweb-form-protection-turnstile-elementor';
 require_once $cwebts_plugin_dir . '/includes/class-settings.php';
 require_once $cwebts_plugin_dir . '/includes/class-verifier.php';
@@ -319,6 +401,10 @@ require_once $cwebts_plugin_dir . '/includes/class-widget-renderer.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-abstract-integration.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-elementor-all-forms.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-comments.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-checkout.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-login.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-register.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-account.php';
 
 /**
  * Reset test state between scenarios.
@@ -330,6 +416,8 @@ function tf_reset( $options = array() ) {
 	$GLOBALS['__tf']['filters']    = array();
 	$GLOBALS['__tf']['doing_ajax'] = false;
 	$GLOBALS['__tf']['caps']       = array();
+	$GLOBALS['__tf']['hooks']      = array();
+	$GLOBALS['__tf']['wc_notices'] = array();
 	unset( $_POST['cf-turnstile-response'], $_REQUEST['action'] );
 	$GLOBALS['__tf']['http']       = array(
 		'wp_error' => false,

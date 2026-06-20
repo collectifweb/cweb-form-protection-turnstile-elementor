@@ -3,6 +3,48 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.0] — 2026-06-19
+
+### Added
+- **WooCommerce form protection** (opt-in, one toggle per form, all off by
+  default). New **Settings → CWeb Form Protection → WooCommerce forms** section
+  with four toggles:
+  - **Checkout (classic)** — renders right before the "Place order" button
+    (`woocommerce_review_order_before_submit`) and verifies on
+    `woocommerce_checkout_process`.
+  - **Login** — renders on `woocommerce_login_form` (covers both the "My account"
+    login and the checkout "returning customer" login) and verifies on the scoped
+    `woocommerce_process_login_errors` filter.
+  - **Registration** — renders on `woocommerce_register_form` and verifies on
+    `woocommerce_process_registration_errors`.
+  - **Account details** — renders on `woocommerce_edit_account_form` and verifies
+    on `woocommerce_save_account_details_errors`.
+
+### Notes
+- The checkout widget is placed **right before the "Place order" button**, where
+  shoppers expect it. That area is inside the block WooCommerce reloads via AJAX
+  (`update_order_review`), so the front-end helper re-renders the widget immediately
+  on the `updated_checkout` event (with the `MutationObserver` as a backstop) to
+  keep a token present at submit time. It also resets the widget on `checkout_error`
+  so that, when a checkout fails after the captcha was solved (an unchecked terms
+  box, a declined payment…), a corrected resubmit gets a fresh token instead of
+  failing Cloudflare with `timeout-or-duplicate`.
+- Registration uses `woocommerce_process_registration_errors` (the "My account"
+  register POST only) rather than `woocommerce_register_post`, which also fires for
+  account creation during checkout and for programmatic customer creation. Account
+  creation during checkout is therefore covered by the **Checkout** toggle, not the
+  **Registration** toggle.
+- WooCommerce error messages use the raw configured message (no extra "Error:"
+  prefix), because WooCommerce already prefixes its own form errors.
+- Scope: covers the **classic (shortcode) checkout**. The **WooCommerce Checkout
+  Block** (Gutenberg) is **not** protected in this version, and the *Pay for order*
+  and *Add payment method* forms are out of scope. Lost password keeps the existing
+  "Lost password form" toggle; product reviews keep the "Comment form" toggle.
+- New code lives in `includes/integrations/class-wc-checkout.php`,
+  `class-wc-login.php`, `class-wc-register.php`, `class-wc-account.php`, built on
+  the same `Abstract_Integration` base as the WordPress integrations. The hooks
+  stay inert when WooCommerce is absent. Unit coverage grew from 73 to 92 tests.
+
 ## [1.1.1] — 2026-06-10
 
 ### Fixed

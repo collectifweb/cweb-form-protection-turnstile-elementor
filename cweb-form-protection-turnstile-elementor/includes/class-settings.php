@@ -46,6 +46,10 @@ class Settings {
 			'protect_register'     => 0,
 			'protect_lostpassword' => 0,
 			'protect_comments'     => 0,
+			'protect_wc_checkout'  => 0,
+			'protect_wc_login'     => 0,
+			'protect_wc_register'  => 0,
+			'protect_wc_account'   => 0,
 			'failure_mode'         => 'block',
 		);
 	}
@@ -223,6 +227,18 @@ class Settings {
 		add_settings_field( 'protect_comments', __( 'Comment form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_comments' ), self::PAGE, 'cwebts_native' );
 
 		add_settings_section(
+			'cwebts_woocommerce',
+			__( 'WooCommerce forms', 'cweb-form-protection-turnstile-elementor' ),
+			array( $this, 'section_woocommerce_intro' ),
+			self::PAGE
+		);
+
+		add_settings_field( 'protect_wc_checkout', __( 'Checkout (classic)', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_wc_checkout' ), self::PAGE, 'cwebts_woocommerce' );
+		add_settings_field( 'protect_wc_login', __( 'Login form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_wc_login' ), self::PAGE, 'cwebts_woocommerce' );
+		add_settings_field( 'protect_wc_register', __( 'Registration form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_wc_register' ), self::PAGE, 'cwebts_woocommerce' );
+		add_settings_field( 'protect_wc_account', __( 'Account details form', 'cweb-form-protection-turnstile-elementor' ), array( $this, 'field_protect_wc_account' ), self::PAGE, 'cwebts_woocommerce' );
+
+		add_settings_section(
 			'cwebts_advanced',
 			__( 'Advanced', 'cweb-form-protection-turnstile-elementor' ),
 			'__return_false',
@@ -263,7 +279,7 @@ class Settings {
 		$message                 = isset( $input['error_message'] ) ? sanitize_text_field( $input['error_message'] ) : '';
 		$clean['error_message']  = '' !== $message ? $message : $this->defaults()['error_message'];
 
-		foreach ( array( 'protect_elementor_all_forms', 'protect_login', 'protect_register', 'protect_lostpassword', 'protect_comments' ) as $toggle ) {
+		foreach ( array( 'protect_elementor_all_forms', 'protect_login', 'protect_register', 'protect_lostpassword', 'protect_comments', 'protect_wc_checkout', 'protect_wc_login', 'protect_wc_register', 'protect_wc_account' ) as $toggle ) {
 			$clean[ $toggle ] = empty( $input[ $toggle ] ) ? 0 : 1;
 		}
 
@@ -467,6 +483,18 @@ class Settings {
 		printf(
 			'<p>%s</p>',
 			esc_html__( 'Enable Turnstile on the built-in WordPress forms (login, registration, lost password, comments).', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * WooCommerce section intro.
+	 *
+	 * @return void
+	 */
+	public function section_woocommerce_intro() {
+		printf(
+			'<p>%s</p>',
+			esc_html__( 'Enable Turnstile on WooCommerce forms. Requires WooCommerce. The lost-password form uses the "Lost password form" setting above, and product reviews use the "Comment form" setting.', 'cweb-form-protection-turnstile-elementor' )
 		);
 	}
 
@@ -684,6 +712,54 @@ class Settings {
 	 */
 	public function field_protect_comments() {
 		$this->render_toggle( 'protect_comments', __( 'Protect the comment form.', 'cweb-form-protection-turnstile-elementor' ) );
+	}
+
+	/**
+	 * WooCommerce checkout toggle.
+	 *
+	 * @return void
+	 */
+	public function field_protect_wc_checkout() {
+		$this->render_toggle( 'protect_wc_checkout', __( 'Protect the classic (shortcode) checkout.', 'cweb-form-protection-turnstile-elementor' ) );
+		printf(
+			'<p class="description">%s</p>',
+			esc_html__( 'Covers the classic shortcode checkout only. The WooCommerce Checkout Block (Gutenberg) is not protected in this version.', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * WooCommerce login toggle.
+	 *
+	 * @return void
+	 */
+	public function field_protect_wc_login() {
+		$this->render_toggle( 'protect_wc_login', __( 'Protect the WooCommerce login form.', 'cweb-form-protection-turnstile-elementor' ) );
+		printf(
+			'<p class="description">%s</p>',
+			esc_html__( 'Covers the "My account" login and the checkout "returning customer" login.', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * WooCommerce registration toggle.
+	 *
+	 * @return void
+	 */
+	public function field_protect_wc_register() {
+		$this->render_toggle( 'protect_wc_register', __( 'Protect the WooCommerce registration form.', 'cweb-form-protection-turnstile-elementor' ) );
+		printf(
+			'<p class="description">%s</p>',
+			esc_html__( 'Covers the "My account" registration form. Account creation during checkout is protected by the checkout setting above.', 'cweb-form-protection-turnstile-elementor' )
+		);
+	}
+
+	/**
+	 * WooCommerce account-details toggle.
+	 *
+	 * @return void
+	 */
+	public function field_protect_wc_account() {
+		$this->render_toggle( 'protect_wc_account', __( 'Protect the WooCommerce account details form.', 'cweb-form-protection-turnstile-elementor' ) );
 	}
 
 	/**

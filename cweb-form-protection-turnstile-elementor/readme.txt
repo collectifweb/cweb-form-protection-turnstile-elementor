@@ -5,7 +5,7 @@ Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,11 @@ Its key difference from other Turnstile plugins is **per-form control for Elemen
   * Registration
   * Lost password
   * Comments
+* Optional protection for WooCommerce forms (one toggle each):
+  * Checkout (classic shortcode checkout)
+  * Login (My account, and the checkout "returning customer" login)
+  * Registration (My account)
+  * Account details
 * One-click import of keys and settings from the "Simple Cloudflare Turnstile" plugin (no need to recreate your Cloudflare keys).
 * Global widget appearance settings (theme, size, visibility, language).
 * Strict server-side token verification (single-use tokens, 5-minute validity).
@@ -65,6 +70,7 @@ Not affiliated with Cloudflare, Inc. or Elementor Ltd. "Cloudflare" and "Turnsti
 3. Go to **Settings → CWeb Form Protection** and enter your Cloudflare **site key** and **secret key**.
 4. (Elementor) Edit a form, add the **Cloudflare Turnstile** field where you want the widget, then save.
 5. (WordPress forms) Enable the toggles for login, registration, lost password and/or comments.
+6. (WooCommerce) Enable the toggles under **WooCommerce forms** for the checkout, login, registration and/or account-details forms.
 
 == Frequently Asked Questions ==
 
@@ -75,6 +81,12 @@ By default, no — and that is the point. You add the Turnstile field only to th
 = Does it work without Elementor Pro? =
 
 The Elementor field needs Elementor Pro (Forms is a Pro module). The WordPress login, registration, lost password and comment integrations work on any WordPress site.
+
+= Which WooCommerce forms are protected? =
+
+Under **Settings → CWeb Form Protection → WooCommerce forms** you can protect the classic checkout, the login form (My account and the checkout "returning customer" login), the registration form and the account-details form — each with its own toggle. The lost-password form uses the existing "Lost password form" toggle, and product reviews use the "Comment form" toggle.
+
+This version protects the **classic (shortcode) checkout**. The newer **WooCommerce Checkout Block** (the Gutenberg block) is **not** covered yet, and the *Pay for order* and *Add payment method* forms are out of scope. Account creation during checkout is protected by the **Checkout** toggle (not the **Registration** toggle).
 
 = Is the secret key safe? =
 
@@ -96,6 +108,12 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 == Changelog ==
 
+= 1.2.0 =
+* New: protect WooCommerce forms, with one opt-in toggle each (all off by default) under a new "WooCommerce forms" section — Checkout (classic shortcode checkout), Login (My account and the checkout "returning customer" login), Registration (My account), and Account details.
+* The checkout widget sits right before the "Place order" button. WooCommerce reloads that area via AJAX when the customer changes shipping or payment, so the widget is re-rendered immediately afterwards to keep a valid token at submit time.
+* Registration is validated on the scoped `woocommerce_process_registration_errors` hook; account creation during checkout is covered by the Checkout toggle instead, so enabling Registration alone never blocks a checkout.
+* Scope: the classic (shortcode) checkout only. The WooCommerce Checkout Block (Gutenberg) is not protected in this version; the lost-password form keeps its existing toggle and product reviews keep the comment toggle.
+
 = 1.1.1 =
 * Fix: replying to a comment from the WordPress admin (the `replyto-comment` AJAX action) was blocked when "Protect comments" was enabled. WordPress builds those replies server-side with no Turnstile widget, so no token is ever sent. Moderators now skip the check in the admin AJAX context; the public comment form stays protected.
 * Fix: a widget hitting a persistent render error (for example a site key restricted to another domain) retried forever, flooding Cloudflare with failed requests and flickering. It now retries a couple of times to recover from a transient network glitch, then stops; a successful challenge clears the counter. No change to server-side verification.
@@ -110,6 +128,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Adds optional Turnstile protection for WooCommerce forms (checkout, login, registration, account details), one toggle each. Existing setups are unchanged: every new toggle is off by default. The classic checkout is covered; the Checkout Block is not.
 
 = 1.1.1 =
 Fixes comment replies from the WordPress admin being blocked when comment protection is on (the public form is unaffected), and stops a failed widget from retrying Cloudflare indefinitely.

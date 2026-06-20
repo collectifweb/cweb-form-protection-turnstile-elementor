@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.1.1\n"
+"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/collectifweb/cweb-form-protection-"
 "turnstile-elementor\n"
-"POT-Creation-Date: 2026-06-10 22:41-0400\n"
+"POT-Creation-Date: 2026-06-19 23:35-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -277,4 +277,56 @@ msgstr ""
 #: includes/integrations/class-wp-lost-password.php:57
 #: includes/integrations/class-wp-register.php:57
 msgid "Error:"
+msgstr ""
+
+#: includes/class-settings.php:231
+msgid "WooCommerce forms"
+msgstr ""
+
+#: includes/class-settings.php:236
+msgid "Checkout (classic)"
+msgstr ""
+
+#: includes/class-settings.php:239
+msgid "Account details form"
+msgstr ""
+
+#: includes/class-settings.php:497
+msgid ""
+"Enable Turnstile on WooCommerce forms. Requires WooCommerce. The lost-"
+"password form uses the \"Lost password form\" setting above, and product "
+"reviews use the \"Comment form\" setting."
+msgstr ""
+
+#: includes/class-settings.php:723
+msgid "Protect the classic (shortcode) checkout."
+msgstr ""
+
+#: includes/class-settings.php:726
+msgid ""
+"Covers the classic shortcode checkout only. The WooCommerce Checkout Block "
+"(Gutenberg) is not protected in this version."
+msgstr ""
+
+#: includes/class-settings.php:736
+msgid "Protect the WooCommerce login form."
+msgstr ""
+
+#: includes/class-settings.php:739
+msgid ""
+"Covers the \"My account\" login and the checkout \"returning customer\" login."
+msgstr ""
+
+#: includes/class-settings.php:749
+msgid "Protect the WooCommerce registration form."
+msgstr ""
+
+#: includes/class-settings.php:752
+msgid ""
+"Covers the \"My account\" registration form. Account creation during checkout "
+"is protected by the checkout setting above."
+msgstr ""
+
+#: includes/class-settings.php:762
+msgid "Protect the WooCommerce account details form."
 msgstr ""
