@@ -56,17 +56,21 @@
 
 ## Où en est-on
 
-**Plugin v1.0.0 — développé, auto-testé et validé par Codex (aucun bloquant).**
-Le travail restant est de la **mise en production** (test manuel sur un vrai
-WordPress + Elementor Pro, choix du nom public final, soumission WordPress.org),
-pas du développement de fonctionnalités.
+**Plugin v1.2.1 — en ligne sur WordPress.org**, testé jusqu'à WordPress 7.1.
+Le développement de fonctionnalités est en pause ; ce qui bouge relève de la
+maintenance (compatibilité, correctifs).
 
-Pipeline suivi : plan → **confront-codex (consensus en 2 rounds)** → développement
-→ **re-revue Codex du code** (corrections appliquées) → **import ajouté** (demande
-utilisateur) → **validation Codex finale** (aucun bloquant). 
+Pipeline suivi à chaque version : plan → **confront-codex (consensus)** →
+développement → **re-revue Codex du code** → déploiement (git, release GitHub,
+SVN wp.org).
 
-État qualité : `php -l` propre sur tous les fichiers ; **52/52 tests** passent
-(`php captcha-field-for-turnstile/tests/run-tests.php`).
+État qualité : `php -l` propre ; **95/95 tests** (`php tests/run-tests.php`, à la
+racine du dépôt, hors dossier plugin) ; **Plugin Check : « No errors found »**.
+Vérifié à l'exécution le 2026-08-13 sur **WordPress 7.1-RC3** avec Elementor Pro
+4.2.1 et WooCommerce 11.0.1, site en français : champ Turnstile par formulaire,
+4 formulaires WooCommerce (dont une commande réellement passée), message par
+défaut bien traduit, aucun avis PHP. Seul écart trouvé : le cache d'éléments
+d'Elementor 4.x face au mode « tous les formulaires » (voir « Limites connues »).
 
 ## Objectif & différenciateur
 
@@ -133,22 +137,42 @@ captcha-field-for-turnstile/
 
 ## Reste à faire (reprise)
 
-1. **Confirmer le nom public final** (branding mainteneur) avant packaging WP.org.
-2. **Tests manuels** sur WordPress réel + Elementor Pro en suivant
-   `captcha-field-for-turnstile/tests/MANUAL-PROTOCOL.md` (clés de test Cloudflare
-   incluses) : champ Elementor, 4 formulaires natifs, failure_mode, import Elliot.
-3. **Figer la version minimale d'Elementor Pro** testée ; vérifier réellement
-   « Tested up to: 7.0 ».
-4. **Screenshots** (settings + champ Elementor) pour le readme WP.org.
-5. **Soumission WordPress.org** (build excluant `tests/` via `.distignore`).
-6. (v1.1) auto-all Elementor expérimental, WooCommerce, `update_controls`.
+> Les six points de juin (nom public, captures, soumission WP.org, tests manuels,
+> « Tested up to », chantier v1.1) sont **tous réglés** — le plugin est en ligne
+> depuis le 2026-06-10 et en v1.2.1 depuis le 2026-08-13.
 
-## Limites connues (non bloquantes)
+1. **Défaut ouvert** — le cache d'éléments d'Elementor 4.x neutralise l'injection
+   du mode « tous les formulaires ». Détail et correctif proposé dans « Limites
+   connues » ci-dessous. **Rien n'est écrit à ce jour.**
+2. **Rejouer la vérification sur WordPress 7.1 finale** (sortie annoncée le
+   2026-08-19) : la 1.2.1 a été validée sur la 7.1-RC3.
+3. (piste) Couvrir le **Checkout Block** de WooCommerce (la page de commande en
+   blocs Gutenberg), aujourd'hui hors périmètre — seule la page à l'ancienne
+   (shortcode) est protégée.
 
+## Limites connues
+
+- **Cache d'éléments d'Elementor 4.x vs mode « tous les formulaires » (bloquant
+  quand il se produit).** Mesuré le 2026-08-13 sur WP 7.1-RC3 + Elementor Pro
+  4.2.1 : Elementor 4.x met en cache le HTML rendu de chaque widget dans la
+  métadonnée `_elementor_element_cache` (durée 24 h ; ce n'est plus une
+  expérimentation, c'est le comportement standard). Quand ce cache existe, le
+  filtre `elementor/widget/render_content` **ne se déclenche pas du tout** (sonde :
+  0 appel) → le widget n'est pas injecté, alors que la validation
+  `elementor_pro/forms/validation`, elle, tourne. Résultat : formulaire sans
+  captcha mais soumission refusée, sans recours pour le visiteur. Fenêtre
+  d'exposition : jusqu'à 24 h après l'activation de l'option, sur les pages déjà
+  rendues. Une fois le cache reconstruit, il contient le widget et tout redevient
+  normal. **N'affecte pas le mode par défaut** (champ Turnstile posé dans le
+  formulaire : Elementor vide le cache à l'enregistrement de la page).
+  *Correctif proposé* : à l'enregistrement des réglages, si
+  `protect_elementor_all_forms` change, purger `_elementor_element_cache`
+  (`delete_post_meta_by_key()`, fonction du cœur) et, si Elementor est présent,
+  appeler `files_manager->clear_cache()`.
 - Reset Turnstile multi-formulaires Elementor simultanés = corrélation FIFO
   best-effort (peut reset le mauvais widget si soumissions concurrentes inversées).
-- Intégration Elementor/WP non exécutable en CI ici → couverte par le protocole
-  manuel versionné.
+- Le passage en caisse **en blocs** de WooCommerce n'est pas protégé (périmètre
+  assumé depuis la 1.2.0).
 
 ## Artefacts de validation
 
