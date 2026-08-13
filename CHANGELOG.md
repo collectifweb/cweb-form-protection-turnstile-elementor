@@ -3,6 +3,30 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.2] — 2026-08-13
+
+### Fixed
+- **Elementor 4's element cache defeated the "protect all Elementor Pro forms"
+  injection.** Elementor 4 stores each widget's rendered HTML in the
+  `_elementor_element_cache` post meta for 24 hours — no longer an experiment,
+  it is the standard behaviour. On a cache hit the
+  `elementor/widget/render_content` filter is **not applied at all** (measured
+  with a probe on WP 7.1-RC3 + Elementor Pro 4.2.1: 0 calls), so
+  `Elementor_All_Forms::inject()` never ran. Meanwhile
+  `elementor_pro/forms/validation` kept rejecting submissions: a form with no
+  widget, refusing every submission, with nothing for the visitor to solve.
+  `Settings::init()` now watches its own option (`update_option_cwebts_settings`
+  and `add_option_cwebts_settings`) and, when `protect_elementor_all_forms`
+  actually changes, drops the cached markup with `delete_post_meta_by_key()`
+  plus Elementor's own `files_manager->clear_cache()` when it is available.
+  - Exposure was bounded: up to 24 hours after switching the option on, and only
+    on pages already rendered. Once the cache was rebuilt it contained the
+    widget and the mode worked.
+  - The default per-form mode was never affected — Elementor drops the cache when
+    the page is saved, which is exactly when the Turnstile field is added.
+- Suite grows from 95 to 101 tests, covering both hooks, the purge on enable and
+  on disable, no purge when other settings change, and the first-save path.
+
 ## [1.2.1] — 2026-08-13
 
 ### Fixed

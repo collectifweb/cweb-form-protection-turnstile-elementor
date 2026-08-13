@@ -29,6 +29,7 @@ $GLOBALS['__tf'] = array(
 	'hooks'      => array(),
 	'wc_notices' => array(),
 	'i18n_calls' => 0,
+	'purged'     => array(),
 	'http'       => array(
 		'wp_error' => false,
 		'code'     => 200,
@@ -296,6 +297,17 @@ function esc_html__( $text, $domain = 'default' ) {
 }
 
 /**
+ * Stub delete_post_meta_by_key. Records the purged keys.
+ *
+ * @param string $key Meta key.
+ * @return bool
+ */
+function delete_post_meta_by_key( $key ) {
+	$GLOBALS['__tf']['purged'][] = $key;
+	return true;
+}
+
+/**
  * Stub sanitize_key.
  *
  * @param string $key Key.
@@ -422,6 +434,7 @@ function tf_reset( $options = array() ) {
 	$GLOBALS['__tf']['hooks']      = array();
 	$GLOBALS['__tf']['wc_notices'] = array();
 	$GLOBALS['__tf']['i18n_calls'] = 0;
+	$GLOBALS['__tf']['purged']     = array();
 	unset( $_POST['cf-turnstile-response'], $_REQUEST['action'] );
 	$GLOBALS['__tf']['http']       = array(
 		'wp_error' => false,

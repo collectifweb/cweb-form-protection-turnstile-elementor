@@ -5,7 +5,7 @@ Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,6 +108,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 == Changelog ==
 
+= 1.2.2 =
+* Fix, for the optional "All Elementor Pro forms" setting only: turning it on could leave forms showing no Turnstile widget while their submissions were already being rejected — visitors were asked to confirm they are not a robot, with nothing to confirm. Elementor 4 keeps the rendered HTML of each widget in a 24-hour cache, and a cached form never passes through the filter this plugin adds its widget with. Saving the setting now clears that cached markup, so the widget shows up right away. Forms carrying the "Cloudflare Turnstile" field were never affected.
+
 = 1.2.1 =
 * Tested with WordPress 7.1.
 * Fix: the plugin no longer asks WordPress for its translations while plugins load, which WordPress 6.7 and later report as too early. Form protection was never affected; this removes a PHP notice logged on every page load on sites that have debugging enabled.
@@ -133,6 +136,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
 
 == Upgrade Notice ==
+
+= 1.2.2 =
+Recommended if you use the optional "All Elementor Pro forms" setting. Turning it on could leave cached forms without a widget for up to 24 hours while their submissions were rejected. Saving the setting now clears Elementor's cached markup.
 
 = 1.2.1 =
 Compatibility update for WordPress 7.1. Removes a translation-loading notice on WordPress 6.7 and later, and lets the default error message follow the site language. Form protection is unchanged.

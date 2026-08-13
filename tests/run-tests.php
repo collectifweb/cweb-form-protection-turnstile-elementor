@@ -220,6 +220,30 @@ new Elementor_All_Forms( $s, $v, $r );
 $s->is_configured();
 t( 'building the integrations asks for no translation', 0 === $GLOBALS['__tf']['i18n_calls'] );
 
+echo "Settings — Elementor cached markup is dropped when the all-forms toggle changes\n";
+tf_reset();
+$s = new Settings();
+$s->init();
+$h = tf_hook( 'update_option_cwebts_settings' );
+t( 'settings watch their own option update (action, 2 args)', $h && 'action' === $h['kind'] && 2 === $h['args'] );
+t( 'settings also watch the first save (add_option)', null !== tf_hook( 'add_option_cwebts_settings' ) );
+
+$GLOBALS['__tf']['purged'] = array();
+$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 0 ), array( 'protect_elementor_all_forms' => 1 ) );
+t( 'turning the toggle on drops Elementor cached markup', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
+
+$GLOBALS['__tf']['purged'] = array();
+$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 1 ), array( 'protect_elementor_all_forms' => 0 ) );
+t( 'turning it off drops the markup too', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
+
+$GLOBALS['__tf']['purged'] = array();
+$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 1, 'theme' => 'auto' ), array( 'protect_elementor_all_forms' => 1, 'theme' => 'dark' ) );
+t( 'saving other settings leaves the cache alone', array() === $GLOBALS['__tf']['purged'] );
+
+$GLOBALS['__tf']['purged'] = array();
+$s->flush_elementor_cache_on_add( 'cwebts_settings', array( 'protect_elementor_all_forms' => 1 ) );
+t( 'a first save with the toggle already on drops the markup', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
+
 echo "Settings — import from Simple Cloudflare Turnstile\n";
 tf_reset();
 $s = new Settings();

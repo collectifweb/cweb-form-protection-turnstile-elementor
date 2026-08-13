@@ -166,6 +166,47 @@ class Settings {
 		add_action( 'admin_notices', array( $this, 'configuration_notice' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'admin_post_' . self::IMPORT_ACTION, array( $this, 'handle_import' ) );
+		add_action( 'update_option_' . self::OPTION, array( $this, 'flush_elementor_cache_on_toggle' ), 10, 2 );
+		add_action( 'add_option_' . self::OPTION, array( $this, 'flush_elementor_cache_on_add' ), 10, 2 );
+	}
+
+	/**
+	 * Drop Elementor's cached markup when the "all forms" toggle changes.
+	 *
+	 * Elementor 4 stores each widget's rendered HTML in the _elementor_element_cache
+	 * post meta for 24 hours, and a cache hit skips the
+	 * elementor/widget/render_content filter this plugin injects through. Without
+	 * this purge, turning the option on leaves already-rendered forms without a
+	 * widget while their submissions are being rejected — a form nobody can pass.
+	 *
+	 * @param array $old_value Previous option value.
+	 * @param array $value     New option value.
+	 * @return void
+	 */
+	public function flush_elementor_cache_on_toggle( $old_value, $value ) {
+		$before = isset( $old_value['protect_elementor_all_forms'] ) ? (int) $old_value['protect_elementor_all_forms'] : 0;
+		$after  = isset( $value['protect_elementor_all_forms'] ) ? (int) $value['protect_elementor_all_forms'] : 0;
+
+		if ( $before === $after ) {
+			return;
+		}
+
+		delete_post_meta_by_key( '_elementor_element_cache' );
+
+		if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance->files_manager ) ) {
+			\Elementor\Plugin::$instance->files_manager->clear_cache();
+		}
+	}
+
+	/**
+	 * Same purge, for the very first save (WordPress fires add_option, not update_option).
+	 *
+	 * @param string $option Option name.
+	 * @param array  $value  Stored value.
+	 * @return void
+	 */
+	public function flush_elementor_cache_on_add( $option, $value ) {
+		$this->flush_elementor_cache_on_toggle( array(), $value );
 	}
 
 	/**
