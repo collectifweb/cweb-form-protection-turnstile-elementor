@@ -28,6 +28,7 @@ $GLOBALS['__tf'] = array(
 	'caps'       => array(),
 	'hooks'      => array(),
 	'wc_notices' => array(),
+	'i18n_calls' => 0,
 	'http'       => array(
 		'wp_error' => false,
 		'code'     => 200,
@@ -261,13 +262,15 @@ function update_option( $name, $value ) {
 }
 
 /**
- * Stub translation.
+ * Stub translation. Counts calls so tests can prove that the boot path
+ * (plugins_loaded) never asks WordPress for a translation.
  *
  * @param string $text   Text.
  * @param string $domain Domain.
  * @return string
  */
 function __( $text, $domain = 'default' ) {
+	$GLOBALS['__tf']['i18n_calls']++;
 	return $text;
 }
 
@@ -418,6 +421,7 @@ function tf_reset( $options = array() ) {
 	$GLOBALS['__tf']['caps']       = array();
 	$GLOBALS['__tf']['hooks']      = array();
 	$GLOBALS['__tf']['wc_notices'] = array();
+	$GLOBALS['__tf']['i18n_calls'] = 0;
 	unset( $_POST['cf-turnstile-response'], $_REQUEST['action'] );
 	$GLOBALS['__tf']['http']       = array(
 		'wp_error' => false,

@@ -30,6 +30,11 @@ class Settings {
 	/**
 	 * Default option values.
 	 *
+	 * Deliberately free of translation calls: this runs on plugins_loaded (the
+	 * integrations read their toggle from here), and WordPress 6.7+ warns when a
+	 * translation is requested that early. An empty error_message means "use the
+	 * localized fallback", resolved at display time by get_error_message().
+	 *
 	 * @return array
 	 */
 	public function defaults() {
@@ -40,7 +45,7 @@ class Settings {
 			'size'                 => 'flexible',
 			'appearance'           => 'always',
 			'language'             => 'auto',
-			'error_message'        => __( 'Please confirm you are not a robot.', 'cweb-form-protection-turnstile-elementor' ),
+			'error_message'        => '',
 			'protect_elementor_all_forms' => 0,
 			'protect_login'        => 0,
 			'protect_register'     => 0,
@@ -135,7 +140,19 @@ class Settings {
 	public function get_error_message() {
 		$message = (string) $this->get( 'error_message', '' );
 
-		return '' !== $message ? $message : $this->defaults()['error_message'];
+		return '' !== $message ? $message : $this->default_error_message();
+	}
+
+	/**
+	 * Localized fallback message, used when no custom message is stored.
+	 *
+	 * Only ever called while rendering or validating a form, i.e. well after the
+	 * init action, which is where translations may safely be requested.
+	 *
+	 * @return string
+	 */
+	public function default_error_message() {
+		return __( 'Please confirm you are not a robot.', 'cweb-form-protection-turnstile-elementor' );
 	}
 
 	/**
@@ -276,8 +293,9 @@ class Settings {
 			$clean[ $key ]   = in_array( $value, $choices[ $key ], true ) ? $value : $this->defaults()[ $key ];
 		}
 
-		$message                 = isset( $input['error_message'] ) ? sanitize_text_field( $input['error_message'] ) : '';
-		$clean['error_message']  = '' !== $message ? $message : $this->defaults()['error_message'];
+		// An empty message is stored as-is: get_error_message() then falls back to
+		// the localized default instead of freezing one language into the option.
+		$clean['error_message'] = isset( $input['error_message'] ) ? sanitize_text_field( $input['error_message'] ) : '';
 
 		foreach ( array( 'protect_elementor_all_forms', 'protect_login', 'protect_register', 'protect_lostpassword', 'protect_comments', 'protect_wc_checkout', 'protect_wc_login', 'protect_wc_register', 'protect_wc_account' ) as $toggle ) {
 			$clean[ $toggle ] = empty( $input[ $toggle ] ) ? 0 : 1;

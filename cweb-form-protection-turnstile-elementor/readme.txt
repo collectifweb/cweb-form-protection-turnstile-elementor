@@ -2,10 +2,10 @@
 Contributors: alexandreminem
 Tags: turnstile, captcha, elementor, spam, cloudflare
 Requires at least: 5.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: elementor
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,6 +108,11 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 
 == Changelog ==
 
+= 1.2.1 =
+* Tested with WordPress 7.1.
+* Fix: the plugin no longer asks WordPress for its translations while plugins load, which WordPress 6.7 and later report as too early. Form protection was never affected; this removes a PHP notice logged on every page load on sites that have debugging enabled.
+* When the "Error message" field is left empty, the default message is now translated as it is displayed, instead of the wording being frozen into your settings the moment you saved them.
+
 = 1.2.0 =
 * New: protect WooCommerce forms, with one opt-in toggle each (all off by default) under a new "WooCommerce forms" section — Checkout (classic shortcode checkout), Login (My account and the checkout "returning customer" login), Registration (My account), and Account details.
 * The checkout widget sits right before the "Place order" button. WooCommerce reloads that area via AJAX when the customer changes shipping or payment, so the widget is re-rendered immediately afterwards to keep a valid token at submit time.
@@ -128,6 +133,9 @@ Missing or invalid tokens are always rejected. If Cloudflare's verification endp
 * Initial release: per-form Turnstile field for Elementor Pro; WordPress login, registration, lost password and comment integrations; global appearance settings; strict server-side verification.
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Compatibility update for WordPress 7.1. Removes a translation-loading notice on WordPress 6.7 and later, and lets the default error message follow the site language. Form protection is unchanged.
 
 = 1.2.0 =
 Adds optional Turnstile protection for WooCommerce forms (checkout, login, registration, account details), one toggle each. Existing setups are unchanged: every new toggle is off by default. The classic checkout is covered; the Checkout Block is not.

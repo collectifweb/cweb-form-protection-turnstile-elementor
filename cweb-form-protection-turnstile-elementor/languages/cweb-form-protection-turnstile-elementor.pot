@@ -1,267 +1,311 @@
-# Translation template for CWeb Form Protection with Turnstile for Elementor Forms.
 # Copyright (C) 2026 Collectif WEB
-# This file is distributed under the same license as the CWeb Form Protection with Turnstile for Elementor Forms package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.2.0\n"
-"Report-Msgid-Bugs-To: https://github.com/collectifweb/cweb-form-protection-"
-"turnstile-elementor\n"
-"POT-Creation-Date: 2026-06-19 23:35-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: CWeb Form Protection with Turnstile for Elementor Forms 1.2.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cweb-form-protection-turnstile-elementor\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-13T15:28:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: cweb-form-protection-turnstile-elementor\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: includes/class-plugin.php:115
-msgid "Settings"
-msgstr ""
-
-#: includes/class-settings.php:43
-msgid "Please confirm you are not a robot."
-msgstr ""
-
-#: includes/class-settings.php:156 includes/class-settings.php:684
+#. Plugin Name of the plugin
+#: cweb-form-protection-turnstile-elementor.php
+#: includes/class-settings.php:178
+#: includes/class-settings.php:813
 msgid "CWeb Form Protection with Turnstile for Elementor Forms"
 msgstr ""
 
-#: includes/class-settings.php:157
+#. Plugin URI of the plugin
+#: cweb-form-protection-turnstile-elementor.php
+msgid "https://github.com/collectifweb/cweb-form-protection-turnstile-elementor"
+msgstr ""
+
+#. Description of the plugin
+#: cweb-form-protection-turnstile-elementor.php
+msgid "Cloudflare Turnstile for your forms, with a per-form field for Elementor Pro so you choose exactly which forms are protected."
+msgstr ""
+
+#. Author of the plugin
+#: cweb-form-protection-turnstile-elementor.php
+msgid "Collectif WEB"
+msgstr ""
+
+#. Author URI of the plugin
+#: cweb-form-protection-turnstile-elementor.php
+msgid "https://collectif-web.ca"
+msgstr ""
+
+#: includes/class-plugin.php:146
+msgid "Settings"
+msgstr ""
+
+#: includes/class-settings.php:155
+msgid "Please confirm you are not a robot."
+msgstr ""
+
+#: includes/class-settings.php:179
 msgid "CWeb Form Protection"
 msgstr ""
 
-#: includes/class-settings.php:182
+#: includes/class-settings.php:204
 msgid "Cloudflare Turnstile keys"
 msgstr ""
 
-#: includes/class-settings.php:187
+#: includes/class-settings.php:209
 msgid "Site key"
 msgstr ""
 
-#: includes/class-settings.php:188
+#: includes/class-settings.php:210
 msgid "Secret key"
 msgstr ""
 
-#: includes/class-settings.php:192
+#: includes/class-settings.php:214
 msgid "Widget appearance"
 msgstr ""
 
-#: includes/class-settings.php:197
+#: includes/class-settings.php:219
 msgid "Theme"
 msgstr ""
 
-#: includes/class-settings.php:198
+#: includes/class-settings.php:220
 msgid "Size"
 msgstr ""
 
-#: includes/class-settings.php:199
+#: includes/class-settings.php:221
 msgid "Visibility"
 msgstr ""
 
-#: includes/class-settings.php:200
+#: includes/class-settings.php:222
 msgid "Language"
 msgstr ""
 
-#: includes/class-settings.php:201
+#: includes/class-settings.php:223
 msgid "Error message"
 msgstr ""
 
-#: includes/class-settings.php:205
+#: includes/class-settings.php:227
+msgid "Elementor Pro forms"
+msgstr ""
+
+#: includes/class-settings.php:232
+msgid "All Elementor Pro forms"
+msgstr ""
+
+#: includes/class-settings.php:236
 msgid "WordPress forms"
 msgstr ""
 
-#: includes/class-settings.php:210
+#: includes/class-settings.php:241
+#: includes/class-settings.php:254
 msgid "Login form"
 msgstr ""
 
-#: includes/class-settings.php:211
+#: includes/class-settings.php:242
+#: includes/class-settings.php:255
 msgid "Registration form"
 msgstr ""
 
-#: includes/class-settings.php:212
+#: includes/class-settings.php:243
 msgid "Lost password form"
 msgstr ""
 
-#: includes/class-settings.php:213
+#: includes/class-settings.php:244
 msgid "Comment form"
 msgstr ""
 
-#: includes/class-settings.php:217
+#: includes/class-settings.php:248
+msgid "WooCommerce forms"
+msgstr ""
+
+#: includes/class-settings.php:253
+msgid "Checkout (classic)"
+msgstr ""
+
+#: includes/class-settings.php:256
+msgid "Account details form"
+msgstr ""
+
+#: includes/class-settings.php:260
 msgid "Advanced"
 msgstr ""
 
-#: includes/class-settings.php:222
+#: includes/class-settings.php:265
 msgid "If Cloudflare is unreachable"
 msgstr ""
 
-#: includes/class-settings.php:381
+#: includes/class-settings.php:425
 msgid "You are not allowed to do this."
 msgstr ""
 
-#: includes/class-settings.php:411
+#: includes/class-settings.php:455
 msgid "Migrating from Simple Cloudflare Turnstile?"
 msgstr ""
 
-#: includes/class-settings.php:412
-msgid ""
-"We detected keys and settings from \"Simple Cloudflare Turnstile\". You can "
-"copy them here so you do not have to recreate your Cloudflare keys. This "
-"does not change or deactivate the other plugin."
+#: includes/class-settings.php:456
+msgid "We detected keys and settings from \"Simple Cloudflare Turnstile\". You can copy them here so you do not have to recreate your Cloudflare keys. This does not change or deactivate the other plugin."
 msgstr ""
 
-#: includes/class-settings.php:416
+#: includes/class-settings.php:460
 msgid "Import keys & settings"
 msgstr ""
 
 #. translators: %s: Cloudflare dashboard URL.
-#: includes/class-settings.php:437
-#, php-format
-msgid ""
-"Create a free widget and get your keys from the <a href=\"%s\" "
-"target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare dashboard</a>."
-msgstr ""
-
-#: includes/class-settings.php:206
-msgid "Elementor Pro forms"
-msgstr ""
-
-#: includes/class-settings.php:211
-msgid "All Elementor Pro forms"
-msgstr ""
-
-#: includes/class-settings.php:469
-msgid ""
-"Enable Turnstile on the built-in WordPress forms (login, registration, lost "
-"password, comments)."
-msgstr ""
-
 #: includes/class-settings.php:481
-msgid ""
-"By default you protect Elementor Pro forms one by one by adding the "
-"\"Cloudflare Turnstile\" field to the forms you choose. Turn the option below "
-"on to protect every Elementor Pro form automatically."
+#, php-format
+msgid "Create a free widget and get your keys from the <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare dashboard</a>."
 msgstr ""
 
-#: includes/class-settings.php:491
+#: includes/class-settings.php:503
+msgid "Enable Turnstile on the built-in WordPress forms (login, registration, lost password, comments)."
+msgstr ""
+
+#: includes/class-settings.php:515
+msgid "Enable Turnstile on WooCommerce forms. Requires WooCommerce. The lost-password form uses the \"Lost password form\" setting above, and product reviews use the \"Comment form\" setting."
+msgstr ""
+
+#: includes/class-settings.php:527
+msgid "By default you protect Elementor Pro forms one by one by adding the \"Cloudflare Turnstile\" field to the forms you choose. Turn the option below on to protect every Elementor Pro form automatically."
+msgstr ""
+
+#: includes/class-settings.php:537
 msgid "Protect every Elementor Pro form automatically."
 msgstr ""
 
-#: includes/class-settings.php:494
-msgid ""
-"When off, only the forms that contain the \"Cloudflare Turnstile\" field are "
-"protected. When on, the widget is added to every Elementor Pro form, just "
-"before its submit button. Requires Elementor Pro."
+#: includes/class-settings.php:540
+msgid "When off, only the forms that contain the \"Cloudflare Turnstile\" field are protected. When on, the widget is added to every Elementor Pro form, just before its submit button. Requires Elementor Pro."
 msgstr ""
 
-#: includes/class-settings.php:487
+#: includes/class-settings.php:568
 msgid "••••••••  (a secret key is saved)"
 msgstr ""
 
-#: includes/class-settings.php:487
+#: includes/class-settings.php:568
 msgid "Enter your secret key"
 msgstr ""
 
-#: includes/class-settings.php:494
+#: includes/class-settings.php:575
 msgid "Remove the saved secret key"
 msgstr ""
 
-#: includes/class-settings.php:495
-msgid ""
-"Leave the field empty to keep the saved key. The secret key is never "
-"displayed."
+#: includes/class-settings.php:576
+msgid "Leave the field empty to keep the saved key. The secret key is never displayed."
 msgstr ""
 
-#: includes/class-settings.php:500
+#: includes/class-settings.php:581
 msgid "The secret key is stored server-side and never sent to the browser."
 msgstr ""
 
-#: includes/class-settings.php:540
+#: includes/class-settings.php:621
 msgid "Auto"
 msgstr ""
 
-#: includes/class-settings.php:541
+#: includes/class-settings.php:622
 msgid "Light"
 msgstr ""
 
-#: includes/class-settings.php:542
+#: includes/class-settings.php:623
 msgid "Dark"
 msgstr ""
 
-#: includes/class-settings.php:556
+#: includes/class-settings.php:637
 msgid "Normal"
 msgstr ""
 
-#: includes/class-settings.php:557
+#: includes/class-settings.php:638
 msgid "Flexible"
 msgstr ""
 
-#: includes/class-settings.php:558
+#: includes/class-settings.php:639
 msgid "Compact"
 msgstr ""
 
-#: includes/class-settings.php:572
+#: includes/class-settings.php:653
 msgid "Always visible"
 msgstr ""
 
-#: includes/class-settings.php:573
+#: includes/class-settings.php:654
 msgid "Only when interaction is required"
 msgstr ""
 
-#: includes/class-settings.php:585
+#: includes/class-settings.php:666
 msgid "\"Auto\" follows the visitor browser language."
 msgstr ""
 
-#: includes/class-settings.php:624
+#: includes/class-settings.php:705
 msgid "Protect the WordPress login form."
 msgstr ""
 
-#: includes/class-settings.php:633
+#: includes/class-settings.php:714
 msgid "Protect the registration form."
 msgstr ""
 
-#: includes/class-settings.php:642
+#: includes/class-settings.php:723
 msgid "Protect the lost password form."
 msgstr ""
 
-#: includes/class-settings.php:651
+#: includes/class-settings.php:732
 msgid "Protect the comment form."
 msgstr ""
 
-#: includes/class-settings.php:663
+#: includes/class-settings.php:741
+msgid "Protect the classic (shortcode) checkout."
+msgstr ""
+
+#: includes/class-settings.php:744
+msgid "Covers the classic shortcode checkout only. The WooCommerce Checkout Block (Gutenberg) is not protected in this version."
+msgstr ""
+
+#: includes/class-settings.php:754
+msgid "Protect the WooCommerce login form."
+msgstr ""
+
+#: includes/class-settings.php:757
+msgid "Covers the \"My account\" login and the checkout \"returning customer\" login."
+msgstr ""
+
+#: includes/class-settings.php:767
+msgid "Protect the WooCommerce registration form."
+msgstr ""
+
+#: includes/class-settings.php:770
+msgid "Covers the \"My account\" registration form. Account creation during checkout is protected by the checkout setting above."
+msgstr ""
+
+#: includes/class-settings.php:780
+msgid "Protect the WooCommerce account details form."
+msgstr ""
+
+#: includes/class-settings.php:792
 msgid "Block the submission (more secure, default)"
 msgstr ""
 
-#: includes/class-settings.php:664
+#: includes/class-settings.php:793
 msgid "Allow the submission (more available)"
 msgstr ""
 
-#: includes/class-settings.php:669
-msgid ""
-"Only applies when Cloudflare cannot be reached (network error or timeout). "
-"Invalid or missing tokens are always blocked."
+#: includes/class-settings.php:798
+msgid "Only applies when Cloudflare cannot be reached (network error or timeout). Invalid or missing tokens are always blocked."
 msgstr ""
 
 #. translators: %d: number of imported settings.
-#: includes/class-settings.php:694
+#: includes/class-settings.php:823
 #, php-format
 msgid "%d setting was imported from Simple Cloudflare Turnstile."
 msgid_plural "%d settings were imported from Simple Cloudflare Turnstile."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-settings.php:730
-msgid ""
-"CWeb Form Protection with Turnstile for Elementor Forms is active but no keys are configured yet, "
-"so no form is protected."
+#: includes/class-settings.php:859
+msgid "CWeb Form Protection with Turnstile for Elementor Forms is active but no keys are configured yet, so no form is protected."
 msgstr ""
 
-#: includes/class-settings.php:732
+#: includes/class-settings.php:861
 msgid "Add your keys"
 msgstr ""
 
@@ -274,59 +318,7 @@ msgid "Comment Submission Failure"
 msgstr ""
 
 #: includes/integrations/class-wp-login.php:70
-#: includes/integrations/class-wp-lost-password.php:57
+#: includes/integrations/class-wp-lost-password.php:62
 #: includes/integrations/class-wp-register.php:57
 msgid "Error:"
-msgstr ""
-
-#: includes/class-settings.php:231
-msgid "WooCommerce forms"
-msgstr ""
-
-#: includes/class-settings.php:236
-msgid "Checkout (classic)"
-msgstr ""
-
-#: includes/class-settings.php:239
-msgid "Account details form"
-msgstr ""
-
-#: includes/class-settings.php:497
-msgid ""
-"Enable Turnstile on WooCommerce forms. Requires WooCommerce. The lost-"
-"password form uses the \"Lost password form\" setting above, and product "
-"reviews use the \"Comment form\" setting."
-msgstr ""
-
-#: includes/class-settings.php:723
-msgid "Protect the classic (shortcode) checkout."
-msgstr ""
-
-#: includes/class-settings.php:726
-msgid ""
-"Covers the classic shortcode checkout only. The WooCommerce Checkout Block "
-"(Gutenberg) is not protected in this version."
-msgstr ""
-
-#: includes/class-settings.php:736
-msgid "Protect the WooCommerce login form."
-msgstr ""
-
-#: includes/class-settings.php:739
-msgid ""
-"Covers the \"My account\" login and the checkout \"returning customer\" login."
-msgstr ""
-
-#: includes/class-settings.php:749
-msgid "Protect the WooCommerce registration form."
-msgstr ""
-
-#: includes/class-settings.php:752
-msgid ""
-"Covers the \"My account\" registration form. Account creation during checkout "
-"is protected by the checkout setting above."
-msgstr ""
-
-#: includes/class-settings.php:762
-msgid "Protect the WooCommerce account details form."
 msgstr ""

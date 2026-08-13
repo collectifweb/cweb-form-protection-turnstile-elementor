@@ -1,8 +1,27 @@
 # STATUS — CWeb Form Protection with Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-06-08 (réponse review WP.org). Le plugin vit dans
+> Dernière mise à jour : 2026-08-13 (compatibilité WordPress 7.1, v1.2.1). Le plugin vit dans
 > `cweb-form-protection-turnstile-elementor/` ; les tests dans `tests/` (racine repo,
 > hors plugin) ; la doc + assets dans `docs/`.
+
+> **MISE À JOUR 2026-08-13 (v1.2.1 — compatibilité WordPress 7.1)** — Le courriel
+> « WordPress 7.1 is scheduled for release on August 19 » demandait de passer
+> `Tested up to` à 7.1. Aucun des 7 changements annoncés (éditeur en iframe,
+> traitement d'images côté navigateur, `@wordpress/components`, barre d'outils
+> persistante, API d'icônes SVG, jQuery UI 1.14.2, API Abilities) ne touche ce
+> plugin — détail dans le CHANGELOG. Un vrai défaut a par contre été trouvé et
+> corrigé : `Settings::defaults()` appelait `__()`, atteint dès `plugins_loaded`
+> par le constructeur de chaque intégration, ce que WordPress 6.7+ signale comme
+> « translation triggered too early ». Le repli traduit vit maintenant dans
+> `Settings::default_error_message()`, appelé au moment d'afficher ou de valider.
+>
+> **Vérifié à l'exécution sur WordPress 7.1-RC3** (wp-env/Docker, Elementor 4.2.2,
+> clés de test Cloudflare) : 1 avis par page avant correctif → 0 après, journal PHP
+> vide, widget rendu sur la connexion et les commentaires, vérification serveur
+> réelle chez Cloudflare (bloqué sans jeton, accepté avec), aucune balise du
+> plugin dans l'éditeur d'articles iframé, **Plugin Check : « No errors found »**.
+> `.pot` régénéré avec `wp i18n make-pot` (16 chaînes qui manquaient). Tests :
+> 92 → 95.
 
 > **MISE À JOUR 2026-06-08 (réponse à la pré-review automatique WP.org)** — La
 > soumission a été *pended* (review `AUTOPREREVIEW`, voir le `.eml` dans `docs/`).

@@ -3,6 +3,40 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.1] — 2026-08-13
+
+### Fixed
+- **Translations were requested too early.** `Settings::defaults()` carried a
+  `__()` call, and every integration reaches `defaults()` from its constructor on
+  `plugins_loaded` (via `is_enabled()`). WordPress 6.7+ raises a
+  `_doing_it_wrong` notice — *"Translation loading for the … domain was triggered
+  too early"* — for any translation requested before `after_setup_theme`. The
+  default message is now resolved by `Settings::default_error_message()`, called
+  only while rendering or validating a form. Nothing about form protection
+  changes.
+  - Measured on WP 7.1-RC3, not deduced: one notice per page load, **on every
+    site**, translated or not. `WP_Textdomain_Registry::get_path_from_lang_dir()`
+    falls back to the domain's custom path, and the `Domain Path: /languages`
+    header registers `wp-content/plugins/<slug>/languages/` as that path — so the
+    registry always returns a directory and the notice is never skipped. With
+    `WP_DEBUG` off it is silent, which is why it went unnoticed.
+- Side effect, on purpose: an empty **Error message** field is now stored empty
+  and translated at display time. It used to store the default resolved at save
+  time, freezing whichever language was active then.
+
+### Notes — WordPress 7.1 compatibility
+- `Tested up to: 7.1`. Reviewed against the 7.1 field guide; none of the changes
+  reach this plugin: the iframed post editor (no editor asset — the admin CSS is
+  gated on the `settings_page_cwebts` hook), client-side media processing (no
+  media handling), `@wordpress/components` (classic Settings API screen, no
+  React), the persistent toolbar (no toolbar item), the SVG Icon API (new
+  capability), the Abilities API, and jQuery UI 1.14.2 — the front-end helper
+  only uses jQuery **core** events (`updated_checkout`, `checkout_error`,
+  `ajaxComplete`), behind a `window.jQuery` guard.
+- Unit coverage grew from 92 to 95 tests: the translation stub now counts calls,
+  so building the whole integration graph is asserted to request zero
+  translations.
+
 ## [1.2.0] — 2026-06-19
 
 ### Added

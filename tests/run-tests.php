@@ -201,7 +201,24 @@ t( 'elementor all-forms toggle checked -> 1', 1 === $clean['protect_elementor_al
 $clean = $s->sanitize( array() );
 t( 'elementor all-forms default -> 0', 0 === $clean['protect_elementor_all_forms'] );
 $clean = $s->sanitize( array( 'error_message' => '' ) );
-t( 'empty error_message -> default', '' !== $clean['error_message'] );
+t( 'empty error_message is stored empty', '' === $clean['error_message'] );
+
+echo "Settings — no translation on the plugins_loaded path (WP 6.7+)\n";
+tf_reset();
+$s = new Settings();
+t( 'defaults() carries no translated string', '' === $s->defaults()['error_message'] );
+t( 'an empty message still displays the localized default', 'Please confirm you are not a robot.' === $s->get_error_message() );
+
+tf_reset();
+$s = new Settings();
+$v = new Verifier( $s );
+$r = new Widget_Renderer( $s );
+$GLOBALS['__tf']['i18n_calls'] = 0;
+new WP_Comments( $s, $v, $r );
+new WC_Checkout( $s, $v, $r );
+new Elementor_All_Forms( $s, $v, $r );
+$s->is_configured();
+t( 'building the integrations asks for no translation', 0 === $GLOBALS['__tf']['i18n_calls'] );
 
 echo "Settings — import from Simple Cloudflare Turnstile\n";
 tf_reset();
