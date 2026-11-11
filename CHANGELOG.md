@@ -3,6 +3,93 @@
 All notable changes to **CWeb Form Protection with Turnstile for Elementor Forms** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.3] - 2026-11-11
+
+### Fixed
+- **The per-form "Cloudflare Turnstile" field showed no widget on visits served
+  from Elementor's element cache, so every submission was rejected.** Measured
+  on WP 7.1.4 and 7.2-beta5 with Elementor 4.2.2 and 4.4.0 + Elementor Pro 4.2.1:
+  the first visit after the cache is emptied prints the widget and both scripts;
+  every later visit (up to 24 hours, Elementor's default) prints the widget
+  placeholder with neither script. Elementor's cache does record the enqueued
+  handles (`cwebts`, `cwebts-api`) and re-enqueues them on a cache hit
+  (`Document::print_elements()`), but the plugin only registered them lazily,
+  while rendering a widget, so WordPress dropped the unknown handles.
+  `Widget_Renderer::init()` now registers (never enqueues) both scripts on
+  `wp_enqueue_scripts` when the keys are set. Pages without a widget still load
+  no Turnstile script. The 1.2.2 check of the all-forms mode only covered the
+  first render; that mode was not affected, since it enqueues on every page.
+- **Keys entered, or the site key changed, after Elementor had cached a form left
+  it without a widget (or with the old key) for up to 24 hours** while
+  submissions were already checked. The 1.2.2 purge of `_elementor_element_cache`
+  now runs when any setting that shapes the widget markup changes
+  (`site_key`, `secret_key`, `theme`, `size`, `appearance`, `language`) as well as
+  `protect_elementor_all_forms`. `flush_elementor_cache_on_toggle()` is renamed
+  `flush_elementor_cache_on_change()`; a missing key compares equal to its
+  default, so an option saved by an older version does not trigger a purge. Only
+  the presence of `secret_key` is compared: replacing one secret with another
+  does not change the markup and does not purge.
+- **A protected form inside a reused Elementor template could stay empty on
+  pages showing that template alone.** Found by an independent review (Codex),
+  then reproduced on WP 7.1.4 + Elementor 4.4.0 + Elementor Pro 4.2.1: page A
+  shows a protected form then template T through `[elementor-template]`; page C
+  shows T alone. `Document::print_elements()` caches only the handles a
+  document adds to the queue, and when T is first rendered on A the Turnstile
+  handles are already queued, so T's cache records none. Page C then printed the
+  widget with neither script. Theme Builder headers and footers and popups go
+  through the same method (not reproduced). `Plugin::keep_turnstile_forms_dynamic()`
+  now answers `elementor/element/is_dynamic_content` with `true` for a `form`
+  widget carrying a `turnstile` field, and for every form when
+  `protect_elementor_all_forms` is on. Elementor then stores a placeholder for
+  that element and renders it on each request, so the field (or the all-forms
+  injection) enqueues the scripts wherever the form appears. Forms without the
+  field stay cached. A form whose own "Cache Settings" control (Advanced tab) is
+  set to Inactive was already rendered on each request; one forced to Active
+  overrides the filter and stays cached (Elementor 4.4.0, `should_render_shortcode()`).
+- **Pages cached by an earlier version kept the old markup after the update.** A
+  cache hit runs neither the field nor the filter above, so a template cached
+  without the scripts stayed empty for up to 24 hours after updating (pointed
+  out by the second Codex review). `Settings::flush_elementor_cache_after_update()`
+  runs on `init`: when the new `cwebts_version` option differs from
+  `CWEBTS_VERSION`, it stores the running version and deletes
+  `_elementor_element_cache` once (not Elementor's generated CSS).
+  `uninstall.php` removes the option. Measured on WP 7.1.4: a template cached
+  the 1.2.2 way stayed without scripts under the new code until the stored
+  version differed; the next request purged it and the page got its script.
+
+### Changed
+- Plugin Check 2.1.0 (2026-08-16) widened its `OffloadedContent` sniff from HTML
+  strings to every string, and flags anything containing `cloudflare.com`. The
+  three hits are the Turnstile service itself (Cloudflare requires `api.js` from
+  its own URL: "Proxying or caching this file will cause Turnstile to fail"), the
+  server-side `siteverify` endpoint and a link to the Cloudflare dashboard, all
+  disclosed in the readme. They now carry a targeted, justified `phpcs:ignore`.
+  Plugin Check 2.2.0: "No errors found" on WP 7.1.4 and 7.2-beta5.
+- Suite grows from 101 to 129 tests. They call the callbacks the plugin actually
+  hooks (the WordPress hook stubs now keep them, and `Plugin::init()` boots under
+  test): the one-time purge after an update; each of the seven
+  widget-shaping settings triggers the purge on its own, the secret only when it
+  appears or disappears, unrelated settings and missing keys do not; the renderer
+  registers both handles on `wp_enqueue_scripts` without enqueuing them; the
+  `is_dynamic_content` filter is hooked with two arguments and covers forms with
+  and without the field, other widgets, malformed data and the all-forms mode.
+  Fourteen deliberate defects (wrong callback names, wrong argument count, a
+  forgotten setting, the secret compared in clear, a purge on every request...)
+  each make the suite fail.
+
+### Verified
+- WordPress 7.1.4 (PHP 8.3) and 7.2-beta5 (PHP 8.5), Elementor 4.4.0, Elementor
+  Pro 4.2.1, WooCommerce 11.3.0: a 28-step browser scenario with the Cloudflare
+  test keys passes on both (native login, registration, lost password, comments,
+  admin replies, block-editor notes, Elementor per-form field including a cached
+  visit and a reused template shown alone, all-forms mode, the four WooCommerce forms with a real order, and a
+  rejecting secret key). With the template fix cancelled by a temporary
+  must-use plugin, the reused-template step fails and only that one (27/28).
+  Unit tests pass on PHP 7.4, 8.3 and 8.5. Plugin Check 2.2.0: "No errors
+  found" on both. `debug.log`: no line from the plugin.
+- A read of the WordPress 7.1.4 to 7.2-beta5 core diff found no change to any hook
+  the plugin uses.
+
 ## [1.2.2] — 2026-08-13
 
 ### Fixed

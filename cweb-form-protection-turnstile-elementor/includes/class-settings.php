@@ -14,11 +14,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings {
 
-	const OPTION        = 'cwebts_settings';
-	const GROUP         = 'cwebts_group';
-	const PAGE          = 'cwebts';
-	const CAP           = 'manage_options';
-	const IMPORT_ACTION = 'cwebts_import';
+	const OPTION         = 'cwebts_settings';
+	const GROUP          = 'cwebts_group';
+	const PAGE           = 'cwebts';
+	const CAP            = 'manage_options';
+	const IMPORT_ACTION  = 'cwebts_import';
+	const VERSION_OPTION = 'cwebts_version';
 
 	/**
 	 * Cached options array.
@@ -166,28 +167,52 @@ class Settings {
 		add_action( 'admin_notices', array( $this, 'configuration_notice' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'admin_post_' . self::IMPORT_ACTION, array( $this, 'handle_import' ) );
-		add_action( 'update_option_' . self::OPTION, array( $this, 'flush_elementor_cache_on_toggle' ), 10, 2 );
+		add_action( 'update_option_' . self::OPTION, array( $this, 'flush_elementor_cache_on_change' ), 10, 2 );
 		add_action( 'add_option_' . self::OPTION, array( $this, 'flush_elementor_cache_on_add' ), 10, 2 );
+		add_action( 'init', array( $this, 'flush_elementor_cache_after_update' ) );
 	}
 
 	/**
-	 * Drop Elementor's cached markup when the "all forms" toggle changes.
+	 * Drop Elementor's cached markup when a setting that shapes the widget changes.
 	 *
 	 * Elementor 4 stores each widget's rendered HTML in the _elementor_element_cache
-	 * post meta for 24 hours, and a cache hit skips the
-	 * elementor/widget/render_content filter this plugin injects through. Without
-	 * this purge, turning the option on leaves already-rendered forms without a
-	 * widget while their submissions are being rejected — a form nobody can pass.
+	 * post meta for 24 hours, and a cache hit renders nothing again: neither the
+	 * Turnstile field nor the elementor/widget/render_content filter this plugin
+	 * injects through. Without this purge, cached forms keep the markup of the
+	 * previous settings — no widget at all when the keys were entered after the
+	 * page was cached, or when "all forms" was just switched on, while their
+	 * submissions are already being checked: a form nobody can pass.
 	 *
 	 * @param array $old_value Previous option value.
 	 * @param array $value     New option value.
 	 * @return void
 	 */
-	public function flush_elementor_cache_on_toggle( $old_value, $value ) {
-		$before = isset( $old_value['protect_elementor_all_forms'] ) ? (int) $old_value['protect_elementor_all_forms'] : 0;
-		$after  = isset( $value['protect_elementor_all_forms'] ) ? (int) $value['protect_elementor_all_forms'] : 0;
+	public function flush_elementor_cache_on_change( $old_value, $value ) {
+		$defaults  = $this->defaults();
+		$old_value = is_array( $old_value ) ? $old_value : array();
+		$value     = is_array( $value ) ? $value : array();
+		$changed   = false;
 
-		if ( $before === $after ) {
+		// Every setting read when the widget markup is built (keys, appearance) or
+		// injected (the all-forms toggle).
+		foreach ( array( 'protect_elementor_all_forms', 'site_key', 'secret_key', 'theme', 'size', 'appearance', 'language' ) as $key ) {
+			$before = isset( $old_value[ $key ] ) ? (string) $old_value[ $key ] : (string) $defaults[ $key ];
+			$after  = isset( $value[ $key ] ) ? (string) $value[ $key ] : (string) $defaults[ $key ];
+
+			// Only the presence of the secret shapes the markup (no widget without
+			// keys); swapping one secret for another does not.
+			if ( 'secret_key' === $key ) {
+				$before = '' === $before ? '' : 'set';
+				$after  = '' === $after ? '' : 'set';
+			}
+
+			if ( $before !== $after ) {
+				$changed = true;
+				break;
+			}
+		}
+
+		if ( ! $changed ) {
 			return;
 		}
 
@@ -206,7 +231,26 @@ class Settings {
 	 * @return void
 	 */
 	public function flush_elementor_cache_on_add( $option, $value ) {
-		$this->flush_elementor_cache_on_toggle( array(), $value );
+		$this->flush_elementor_cache_on_change( array(), $value );
+	}
+
+	/**
+	 * Drop Elementor's cached markup once after the plugin is installed or updated.
+	 *
+	 * A cache entry built by an older version is served as is until it expires (24
+	 * hours by default): neither the Turnstile field nor the is_dynamic_content
+	 * filter runs on it. Clearing it once lets a fix reach pages cached before the
+	 * update. Only the element cache is cleared, not Elementor's generated CSS.
+	 *
+	 * @return void
+	 */
+	public function flush_elementor_cache_after_update() {
+		if ( CWEBTS_VERSION === get_option( self::VERSION_OPTION ) ) {
+			return;
+		}
+
+		update_option( self::VERSION_OPTION, CWEBTS_VERSION, true );
+		delete_post_meta_by_key( '_elementor_element_cache' );
 	}
 
 	/**
@@ -520,7 +564,7 @@ class Settings {
 				sprintf(
 					/* translators: %s: Cloudflare dashboard URL. */
 					__( 'Create a free widget and get your keys from the <a href="%s" target="_blank" rel="noopener noreferrer">Cloudflare dashboard</a>.', 'cweb-form-protection-turnstile-elementor' ),
-					'https://dash.cloudflare.com/?to=/:account/turnstile'
+					'https://dash.cloudflare.com/?to=/:account/turnstile' // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- A link to the Cloudflare dashboard; nothing is loaded from it.
 				),
 				array(
 					'a' => array(

@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Verifier {
 
-	const ENDPOINT         = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+	const ENDPOINT         = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'; // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- Server-side verification API, nothing is loaded in the browser. Disclosed in readme.txt.
 	const MAX_TOKEN_LENGTH = 2048;
 
 	/**

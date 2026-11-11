@@ -308,6 +308,57 @@ function delete_post_meta_by_key( $key ) {
 }
 
 /**
+ * Stub wp_script_is (only the 'registered' and 'enqueued' lists are tracked).
+ *
+ * @param string $handle Script handle.
+ * @param string $list   List to check.
+ * @return bool
+ */
+function wp_script_is( $handle, $list = 'enqueued' ) {
+	$key = 'registered' === $list ? 'registered' : 'enqueued';
+	return isset( $GLOBALS['__tf']['scripts'][ $key ][ $handle ] );
+}
+
+/**
+ * Stub wp_register_script. Records the handle and its dependencies.
+ *
+ * @param string $handle Script handle.
+ * @param string $src    Source URL.
+ * @param array  $deps   Dependencies.
+ * @param mixed  $ver    Version.
+ * @param mixed  $args   In footer / strategy.
+ * @return bool
+ */
+function wp_register_script( $handle, $src, $deps = array(), $ver = false, $args = array() ) {
+	$GLOBALS['__tf']['scripts']['registered'][ $handle ] = array(
+		'src'  => $src,
+		'deps' => $deps,
+	);
+	return true;
+}
+
+/**
+ * Stub wp_enqueue_script. Records the handle.
+ *
+ * @param string $handle Script handle.
+ * @return void
+ */
+function wp_enqueue_script( $handle ) {
+	$GLOBALS['__tf']['scripts']['enqueued'][ $handle ] = true;
+}
+
+/**
+ * Stub add_query_arg (array form only, as used by the plugin).
+ *
+ * @param array  $args Query arguments.
+ * @param string $url  Base URL.
+ * @return string
+ */
+function add_query_arg( $args, $url ) {
+	return $url . ( false === strpos( $url, '?' ) ? '?' : '&' ) . http_build_query( $args );
+}
+
+/**
  * Stub sanitize_key.
  *
  * @param string $key Key.
@@ -370,6 +421,7 @@ function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
 		'tag'      => $tag,
 		'priority' => $priority,
 		'args'     => $accepted_args,
+		'callback' => $callback,
 	);
 	return true;
 }
@@ -389,6 +441,7 @@ function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
 		'tag'      => $tag,
 		'priority' => $priority,
 		'args'     => $accepted_args,
+		'callback' => $callback,
 	);
 	return true;
 }
@@ -416,10 +469,14 @@ require_once $cwebts_plugin_dir . '/includes/class-widget-renderer.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-abstract-integration.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-elementor-all-forms.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-comments.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-login.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-register.php';
+require_once $cwebts_plugin_dir . '/includes/integrations/class-wp-lost-password.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-checkout.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-login.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-register.php';
 require_once $cwebts_plugin_dir . '/includes/integrations/class-wc-account.php';
+require_once $cwebts_plugin_dir . '/includes/class-plugin.php';
 
 /**
  * Reset test state between scenarios.
@@ -435,6 +492,10 @@ function tf_reset( $options = array() ) {
 	$GLOBALS['__tf']['wc_notices'] = array();
 	$GLOBALS['__tf']['i18n_calls'] = 0;
 	$GLOBALS['__tf']['purged']     = array();
+	$GLOBALS['__tf']['scripts']    = array(
+		'registered' => array(),
+		'enqueued'   => array(),
+	);
 	unset( $_POST['cf-turnstile-response'], $_REQUEST['action'] );
 	$GLOBALS['__tf']['http']       = array(
 		'wp_error' => false,

@@ -46,6 +46,19 @@ From <https://developers.cloudflare.com/turnstile/troubleshooting/testing/>:
 - [ ] Switch to *always blocks* keys → form A submission shows the error on the field; form B still works.
 - [ ] **Single-use token:** add a required text field to form A, leave it empty, solve Turnstile, submit → validation error. Fix the field and submit again → **succeeds** (no `timeout-or-duplicate`; the widget was reset).
 - [ ] Two forms with the field on one page: each submits independently and validates.
+- [ ] **Cached visit (Elementor element cache, on by default):** open the page in a
+  second private window, after a first visit has filled the cache (the
+  `_elementor_element_cache` post meta exists). Form A must still show the widget
+  and submit. A first visit alone proves nothing: up to 1.2.2 the widget showed
+  on the first visit and vanished on every cached one.
+- [ ] **Keys entered after caching:** with the page already cached, remove then
+  re-enter the site key and save. The next visit shows the widget (the save
+  clears Elementor's cached markup).
+- [ ] **Reused template:** save form A's container as a template T. Page P1 shows
+  another protected form, then T through `[elementor-template id="…"]`; page P2
+  shows T alone. Visit P1 first (it caches T while the scripts are already
+  loaded), then P2 in a private window: T's form must show the widget and submit.
+  Up to 1.2.2 it stayed empty on P2.
 
 ## C. WordPress native forms
 
@@ -71,4 +84,4 @@ For each, enable its toggle in settings.
 
 ## F. Cleanup
 
-- [ ] Deactivate + delete the plugin → `cwebts_settings` option is removed (check the options table).
+- [ ] Deactivate + delete the plugin → `cwebts_settings` and `cwebts_version` options are removed (check the options table).

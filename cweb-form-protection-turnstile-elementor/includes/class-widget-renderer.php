@@ -16,7 +16,7 @@ class Widget_Renderer {
 
 	const API_HANDLE = 'cwebts-api';
 	const JS_HANDLE  = 'cwebts';
-	const API_URL    = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+	const API_URL    = 'https://challenges.cloudflare.com/turnstile/v0/api.js'; // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- Turnstile is the service itself; Cloudflare requires api.js from this exact URL (proxying or caching it breaks the widget). Disclosed in readme.txt.
 
 	/**
 	 * Settings service.
@@ -41,6 +41,27 @@ class Widget_Renderer {
 	 */
 	public function init() {
 		add_filter( 'script_loader_tag', array( $this, 'filter_script_tag' ), 10, 2 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+	}
+
+	/**
+	 * Register (not enqueue) the scripts on every front-end request.
+	 *
+	 * Elementor 4 caches each page's rendered widgets (24 hours by default). On a
+	 * cache hit it does not render the form again: it prints the stored HTML and
+	 * re-enqueues the script handles recorded the first time. Those handles only
+	 * resolve if they are registered on that request too; otherwise WordPress
+	 * drops them, the Turnstile placeholder stays empty and every submission of a
+	 * form carrying the Turnstile field is rejected. Registering prints nothing.
+	 *
+	 * @return void
+	 */
+	public function register_assets() {
+		if ( ! $this->settings->is_configured() ) {
+			return;
+		}
+
+		$this->register_scripts();
 	}
 
 	/**

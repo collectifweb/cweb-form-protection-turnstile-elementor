@@ -1,8 +1,33 @@
 # STATUS — CWeb Form Protection with Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-08-13 (compatibilité WordPress 7.1 puis correctif cache Elementor, v1.2.2). Le plugin vit dans
+> Dernière mise à jour : 2026-11-11 (rendez-vous de fin octobre : compatibilité 7.1.4 / 7.2 bêta, v1.2.3 préparée). Le plugin vit dans
 > `cweb-form-protection-turnstile-elementor/` ; les tests dans `tests/` (racine repo,
 > hors plugin) ; la doc + assets dans `docs/`.
+
+> **MISE À JOUR 2026-11-11 (v1.2.3 — cache d'Elementor, mode par formulaire)** —
+> Rendez-vous de fin de mois. Vérifié à l'exécution sur **WordPress 7.1.4 (PHP 8.3)
+> et 7.2 bêta 5 (PHP 8.5)**, Elementor 4.4.0, Elementor Pro 4.2.1, WooCommerce
+> 11.3.0 : scénario navigateur de 28 étapes (`tasks/todo.md`), toutes réussies
+> après correctif. Lecture du diff du cœur 7.1.4 → 7.2 bêta 5 : aucun crochet
+> utilisé par l'extension ne change. **Quatre vrais défauts trouvés et corrigés** :
+> (1) le **champ Turnstile par formulaire** perdait son widget dès la deuxième
+> visite (page servie par le cache d'éléments d'Elementor) : le cache réenfile
+> `cwebts`/`cwebts-api`, mais l'extension ne les enregistrait qu'au rendu ; ils
+> sont maintenant enregistrés sur `wp_enqueue_scripts`. Mesuré aussi avec
+> Elementor 4.2.2 : le défaut existait déjà en août, la validation de la 1.2.2
+> n'avait regardé que la première visite. (2) Des clés saisies ou changées après
+> la mise en cache laissaient le formulaire sans widget jusqu'à 24 h : la purge de
+> la 1.2.2 couvre maintenant les clés et l'apparence. (3) Trouvé par la relecture
+> Codex puis reproduit : un **formulaire protégé dans un modèle réutilisé**
+> (`[elementor-template]`), mis en cache sur une page qui chargeait déjà les scripts,
+> restait vide sur une page où il est seul. Les formulaires protégés sont
+> maintenant exclus du cache d'éléments (filtre `elementor/element/is_dynamic_content`,
+> `Plugin::keep_turnstile_forms_dynamic()`). (4) Après une mise à jour, l'extension vide
+> une fois ce cache (option `cwebts_version`), pour que les pages déjà en cache
+> profitent des correctifs sans attendre 24 h. **Plugin Check 2.1+** signalait
+> 3 « OffloadedContent » (règle élargie le 16 août) : `phpcs:ignore` justifiés,
+> 2.2.0 → « No errors found ». Tests : 101 → 129, PHP 7.4 / 8.3 / 8.5.
+> « Tested up to » laissé à 7.1 (la 7.2 sort le 8 décembre).
 
 > **MISE À JOUR 2026-08-13 (v1.2.1 — compatibilité WordPress 7.1)** — Le courriel
 > « WordPress 7.1 is scheduled for release on August 19 » demandait de passer
@@ -64,16 +89,19 @@
 
 ## Où en est-on
 
-**Plugin v1.2.2 — en ligne sur WordPress.org**, testé jusqu'à WordPress 7.1.
-Le développement de fonctionnalités est en pause ; ce qui bouge relève de la
-maintenance (compatibilité, correctifs).
+**Plugin v1.2.2 en ligne sur WordPress.org ; v1.2.3 prête localement (commit
+local), en attente du « oui » d'Alexandre pour la publier** (push GitHub, tag et
+release, SVN wp.org). Le développement de fonctionnalités est en pause ; ce qui
+bouge relève de la maintenance (compatibilité, correctifs).
 
 Pipeline suivi à chaque version : plan → **confront-codex (consensus)** →
 développement → **re-revue Codex du code** → déploiement (git, release GitHub,
 SVN wp.org).
 
-État qualité : `php -l` propre ; **101/101 tests** (`php tests/run-tests.php`, à la
-racine du dépôt, hors dossier plugin) ; **Plugin Check : « No errors found »**.
+État qualité (2026-11-11, v1.2.3) : `php -l` propre ; **129/129 tests** sous PHP 7.4,
+8.3 et 8.5 (`php tests/run-tests.php`, à la racine du dépôt, hors dossier plugin) ;
+**Plugin Check 2.2.0 : « No errors found »** sur WP 7.1.4 et 7.2 bêta 5 ; scénario
+navigateur de 28 étapes réussi sur les deux (`tests/e2e/`). Historique de la 1.2.2 ci-dessous.
 Vérifié à l'exécution le 2026-08-13 sur **WordPress 7.1-RC3** avec Elementor Pro
 4.2.1 et WooCommerce 11.0.1, site en français : champ Turnstile par formulaire,
 4 formulaires WooCommerce (dont une commande réellement passée), message par
@@ -95,7 +123,7 @@ régénération de clés Cloudflare).
 ```
 captcha-field-for-turnstile/
 ├── captcha-field-for-turnstile.php   Bootstrap + autoloader (namespace TurnstileForms)
-├── uninstall.php                     Supprime l'option (mono + multisite)
+├── uninstall.php                     Supprime les 2 options (mono + multisite)
 ├── .distignore                       Exclut tests/, README.md du build WP.org
 ├── readme.txt / README.md / LICENSE  Packaging (GPLv2 or later)
 ├── includes/
@@ -150,14 +178,40 @@ captcha-field-for-turnstile/
 > « Tested up to », chantier v1.1) sont **tous réglés** — le plugin est en ligne
 > depuis le 2026-06-10 et en v1.2.1 depuis le 2026-08-13.
 
-1. **Rejouer la vérification sur WordPress 7.1 finale** (sortie annoncée le
-   2026-08-19) : la 1.2.2 a été validée sur la 7.1-RC3.
+1. ~~Rejouer la vérification sur WordPress 7.1 finale~~ : fait le 2026-11-11 sur
+   7.1.4 (et 7.2 bêta 5).
+2. **Passer « Tested up to » à 7.2** quand la 7.2 sera en RC ou sortie (prévue le
+   2026-12-08) : modification du seul readme, sans nouvelle version. Rejouer
+   d'abord le scénario sur la RC.
 3. (piste) Couvrir le **Checkout Block** de WooCommerce (la page de commande en
    blocs Gutenberg), aujourd'hui hors périmètre — seule la page à l'ancienne
    (shortcode) est protégée.
 
 ## Limites connues
 
+- **Cache d'éléments d'Elementor 4.x vs champ par formulaire — CORRIGÉ en 1.2.3.**
+  Sur un cache valide, Elementor n'affiche plus les champs : il ressert le HTML et
+  réenfile les poignées de scripts mémorisées au premier rendu. Nos poignées
+  n'étaient enregistrées qu'au rendu, donc ignorées : widget vide, envois
+  refusés, dès la deuxième visite. `Widget_Renderer::register_assets()` les
+  enregistre désormais sur `wp_enqueue_scripts` (sans les charger). La purge de
+  `_elementor_element_cache` se déclenche aussi quand les clés ou l'apparence
+  changent. Tester toujours **deux visites** (voir `tasks/lessons.md`).
+- **Formulaire protégé dans un modèle Elementor réutilisé — CORRIGÉ en 1.2.3.**
+  Le cache d'un document ne retient que les scripts que ce document ajoute à la
+  file : un modèle rendu d'abord sur une page qui les avait déjà en file n'en
+  retient aucun, et reste vide ailleurs. Reproduit avec `[elementor-template]` ;
+  en-têtes, pieds de page du Theme Builder et fenêtres surgissantes passent par
+  la même méthode (non reproduit). Les formulaires qui portent le champ, et tous
+  les formulaires en mode « tous les formulaires », sont rendus à chaque visite.
+  Limite : un formulaire dont le réglage « Cache Settings » (onglet Avancé) est
+  forcé sur « Active » reste en cache et retrouve le défaut.
+- **Signalé par la relecture Codex, non traité (antérieur à la 1.2.3)** : en mode
+  par formulaire, une page sans widget ne charge aucun script ; un formulaire
+  protégé inséré ensuite par AJAX (ou ajouté dans un aperçu Elementor déjà
+  ouvert) n'a donc pas de widget. Un cache de pages ou un CDN qui n'écoute pas
+  la purge d'Elementor peut servir l'ancien widget après un changement de clé.
+  La purge vide aussi les CSS générées par Elementor sur tout le site.
 - **Cache d'éléments d'Elementor 4.x vs mode « tous les formulaires » — CORRIGÉ
   en 1.2.2.** Mesuré le 2026-08-13 sur WP 7.1-RC3 + Elementor Pro
   4.2.1 : Elementor 4.x met en cache le HTML rendu de chaque widget dans la

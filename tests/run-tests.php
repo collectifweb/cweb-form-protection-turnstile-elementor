@@ -220,29 +220,121 @@ new Elementor_All_Forms( $s, $v, $r );
 $s->is_configured();
 t( 'building the integrations asks for no translation', 0 === $GLOBALS['__tf']['i18n_calls'] );
 
-echo "Settings — Elementor cached markup is dropped when the all-forms toggle changes\n";
+echo "Settings — Elementor cached markup is dropped when a widget-shaping setting changes\n";
 tf_reset();
 $s = new Settings();
 $s->init();
 $h = tf_hook( 'update_option_cwebts_settings' );
 t( 'settings watch their own option update (action, 2 args)', $h && 'action' === $h['kind'] && 2 === $h['args'] );
-t( 'settings also watch the first save (add_option)', null !== tf_hook( 'add_option_cwebts_settings' ) );
+$add = tf_hook( 'add_option_cwebts_settings' );
+t( 'settings also watch the first save (add_option)', null !== $add );
+
+// Drive the purge through the callbacks actually hooked, as WordPress would.
+$purge = function ( $old, $new ) use ( $h ) {
+	$GLOBALS['__tf']['purged'] = array();
+	call_user_func( $h['callback'], $old, $new );
+	return array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'];
+};
+$base = array(
+	'protect_elementor_all_forms' => 0,
+	'site_key'                    => 'site',
+	'secret_key'                  => 'secret',
+	'theme'                       => 'auto',
+	'size'                        => 'flexible',
+	'appearance'                  => 'always',
+	'language'                    => 'auto',
+);
+$changes = array(
+	'protect_elementor_all_forms' => 1,
+	'site_key'                    => 'other-site',
+	'theme'                       => 'dark',
+	'size'                        => 'compact',
+	'appearance'                  => 'interaction-only',
+	'language'                    => 'fr',
+);
+foreach ( $changes as $key => $value ) {
+	t( "changing $key alone drops Elementor cached markup", $purge( $base, array_merge( $base, array( $key => $value ) ) ) );
+}
+t( 'turning the all-forms toggle off drops the markup too', $purge( array_merge( $base, array( 'protect_elementor_all_forms' => 1 ) ), $base ) );
+t( 'entering the keys after forms were cached drops the markup', $purge( array_merge( $base, array( 'site_key' => '', 'secret_key' => '' ) ), $base ) );
+t( 'adding the missing secret drops the markup (no widget was rendered without it)', $purge( array_merge( $base, array( 'secret_key' => '' ) ), $base ) );
+t( 'removing the secret drops the markup', $purge( $base, array_merge( $base, array( 'secret_key' => '' ) ) ) );
+t( 'swapping one secret for another leaves the cache alone (same markup)', ! $purge( $base, array_merge( $base, array( 'secret_key' => 'rotated' ) ) ) );
+t(
+	'saving settings that do not shape the widget leaves the cache alone',
+	! $purge(
+		$base + array( 'protect_login' => 0, 'failure_mode' => 'block', 'error_message' => '' ),
+		$base + array( 'protect_login' => 1, 'failure_mode' => 'allow', 'error_message' => 'Nope' )
+	)
+);
+t( 'a missing key and its default compare equal (no purge)', ! $purge( array(), array( 'protect_elementor_all_forms' => 0 ) ) );
 
 $GLOBALS['__tf']['purged'] = array();
-$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 0 ), array( 'protect_elementor_all_forms' => 1 ) );
-t( 'turning the toggle on drops Elementor cached markup', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
-
-$GLOBALS['__tf']['purged'] = array();
-$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 1 ), array( 'protect_elementor_all_forms' => 0 ) );
-t( 'turning it off drops the markup too', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
-
-$GLOBALS['__tf']['purged'] = array();
-$s->flush_elementor_cache_on_toggle( array( 'protect_elementor_all_forms' => 1, 'theme' => 'auto' ), array( 'protect_elementor_all_forms' => 1, 'theme' => 'dark' ) );
-t( 'saving other settings leaves the cache alone', array() === $GLOBALS['__tf']['purged'] );
-
-$GLOBALS['__tf']['purged'] = array();
-$s->flush_elementor_cache_on_add( 'cwebts_settings', array( 'protect_elementor_all_forms' => 1 ) );
+call_user_func( $add['callback'], 'cwebts_settings', array( 'protect_elementor_all_forms' => 1 ) );
 t( 'a first save with the toggle already on drops the markup', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
+$GLOBALS['__tf']['purged'] = array();
+call_user_func( $add['callback'], 'cwebts_settings', array( 'site_key' => 'site', 'secret_key' => 'secret' ) );
+t( 'a first save that enters the keys drops the markup', array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'] );
+
+echo "Settings — Elementor cached markup is dropped once after an install or update\n";
+tf_reset();
+$s = new Settings();
+$s->init();
+$h = tf_hook( 'init' );
+t( 'settings check the stored version on init', $h && 'action' === $h['kind'] );
+$run = function () use ( $h ) {
+	$GLOBALS['__tf']['purged'] = array();
+	call_user_func( $h['callback'] );
+	return array( '_elementor_element_cache' ) === $GLOBALS['__tf']['purged'];
+};
+t( 'first request after install drops the cached markup', $run() );
+t( 'and records the running version', CWEBTS_VERSION === get_option( 'cwebts_version' ) );
+t( 'later requests leave the cache alone', ! $run() );
+update_option( 'cwebts_version', '1.2.2' );
+t( 'first request after an update drops the cached markup again', $run() && CWEBTS_VERSION === get_option( 'cwebts_version' ) );
+
+echo "Widget renderer — scripts registered on every front-end page (Elementor element cache)\n";
+tf_reset();
+$r = new Widget_Renderer( new Settings() );
+$r->init();
+$h = tf_hook( 'wp_enqueue_scripts' );
+t( 'renderer hooks wp_enqueue_scripts (action)', $h && 'action' === $h['kind'] );
+call_user_func( $h['callback'] );
+t( 'the hooked callback registers both handles so a cached page can enqueue them', isset( $GLOBALS['__tf']['scripts']['registered']['cwebts'], $GLOBALS['__tf']['scripts']['registered']['cwebts-api'] ) );
+t( 'registering enqueues nothing (no script on pages without a widget)', array() === $GLOBALS['__tf']['scripts']['enqueued'] );
+t( 'the Cloudflare API still depends on the helper (onload defined first)', array( 'cwebts' ) === $GLOBALS['__tf']['scripts']['registered']['cwebts-api']['deps'] );
+
+tf_reset( array( 'site_key' => '', 'secret_key' => '' ) );
+$r = new Widget_Renderer( new Settings() );
+$r->init();
+call_user_func( tf_hook( 'wp_enqueue_scripts' )['callback'] );
+t( 'nothing is registered while the keys are missing', array() === $GLOBALS['__tf']['scripts']['registered'] );
+
+echo "Plugin — protected Elementor forms stay out of the element cache\n";
+tf_reset();
+$plugin = new \CWebTS\Plugin();
+$plugin->init();
+$h = tf_hook( 'elementor/element/is_dynamic_content' );
+t( 'booting the plugin hooks the filter with the element data (filter, 2 args)', $h && 'filter' === $h['kind'] && 2 === $h['args'] );
+$dyn = function ( $raw, $is = false ) use ( $h ) {
+	return call_user_func( $h['callback'], $is, $raw );
+};
+$form = function ( $types ) {
+	$fields = array();
+	foreach ( $types as $type ) {
+		$fields[] = array( 'field_type' => $type );
+	}
+	return array( 'elType' => 'widget', 'widgetType' => 'form', 'settings' => array( 'form_fields' => $fields ) );
+};
+t( 'a form carrying the Turnstile field is dynamic (rendered on every request)', true === $dyn( $form( array( 'text', 'turnstile' ) ) ) );
+t( 'a form without the field stays cacheable', false === $dyn( $form( array( 'text', 'email' ) ) ) );
+t( 'another widget type is left alone', false === $dyn( array( 'widgetType' => 'heading', 'settings' => array( 'form_fields' => array( array( 'field_type' => 'turnstile' ) ) ) ) ) );
+t( 'an element Elementor already treats as dynamic stays dynamic', true === $dyn( $form( array( 'text' ) ), true ) );
+t( 'malformed element data is left alone', false === $dyn( null ) && false === $dyn( array( 'widgetType' => 'form' ) ) );
+
+tf_reset( array( 'protect_elementor_all_forms' => 1 ) );
+$plugin = new \CWebTS\Plugin();
+t( 'with all-forms on, every form is dynamic (the injection runs on each request)', true === $plugin->keep_turnstile_forms_dynamic( false, $form( array( 'text' ) ) ) );
 
 echo "Settings — import from Simple Cloudflare Turnstile\n";
 tf_reset();

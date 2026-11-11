@@ -89,6 +89,43 @@ class Plugin {
 				$registrar->register( new Elementor\Turnstile_Field( $settings, $verifier, $renderer ) );
 			}
 		);
+
+		add_filter( 'elementor/element/is_dynamic_content', array( $this, 'keep_turnstile_forms_dynamic' ), 10, 2 );
+	}
+
+	/**
+	 * Keep protected Elementor Pro forms out of Elementor's element cache.
+	 *
+	 * Elementor 4 caches each document's widgets as HTML and, on later visits,
+	 * re-enqueues only the scripts that were added while that document rendered.
+	 * A form inside a template first cached on a page that had already enqueued
+	 * the Turnstile scripts (an [elementor-template] shortcode, a Theme Builder
+	 * header or footer, a popup) is cached without them; on any other page it then
+	 * shows an empty widget and every submission is rejected. A dynamic element is
+	 * stored as a placeholder and rendered on every request, so the field (or the
+	 * all-forms injection) enqueues the scripts wherever the form appears.
+	 *
+	 * @param bool  $is_dynamic Whether Elementor already treats the element as dynamic.
+	 * @param array $raw_data   Raw element data.
+	 * @return bool
+	 */
+	public function keep_turnstile_forms_dynamic( $is_dynamic, $raw_data ) {
+		if ( $is_dynamic || ! is_array( $raw_data ) || ! isset( $raw_data['widgetType'] ) || 'form' !== $raw_data['widgetType'] ) {
+			return $is_dynamic;
+		}
+
+		if ( 1 === (int) $this->settings->get( 'protect_elementor_all_forms' ) ) {
+			return true;
+		}
+
+		$fields = isset( $raw_data['settings']['form_fields'] ) && is_array( $raw_data['settings']['form_fields'] ) ? $raw_data['settings']['form_fields'] : array();
+		foreach ( $fields as $field ) {
+			if ( is_array( $field ) && isset( $field['field_type'] ) && 'turnstile' === $field['field_type'] ) {
+				return true;
+			}
+		}
+
+		return $is_dynamic;
 	}
 
 	/**
