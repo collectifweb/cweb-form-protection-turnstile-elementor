@@ -69,7 +69,7 @@ cweb-form-protection-turnstile-elementor/      ← the shippable plugin (this be
   includes/                              Settings, Verifier, Widget_Renderer, Elementor field, WP integrations
   assets/js/turnstile.js                 Explicit render + AJAX reset + expired-callback
   languages/                             .pot
-tests/                                   Verifier + import unit tests, manual protocol (dev-only, not shipped)
+tests/                                   Unit tests, browser scenario (e2e/), manual protocol (dev-only, not shipped)
 docs/                                    Architecture, plan, status, screenshots, WP.org assets
 ```
 
@@ -86,7 +86,7 @@ docs/                                    Architecture, plan, status, screenshots
 ## Development
 
 ```bash
-php tests/run-tests.php   # 52 assertions, no PHPUnit needed
+php tests/run-tests.php   # 129 tests, no PHPUnit needed
 ```
 
 ## License

@@ -19,10 +19,12 @@ name are kept verbatim.
 ```
 cweb-form-protection-turnstile-elementor.php   Bootstrap: constants, autoloader, plugins_loaded
 includes/
-  class-plugin.php                       Wires hooks, instantiates the service graph
+  class-plugin.php                       Wires hooks, instantiates the service graph,
+                                         keeps protected forms out of Elementor's element cache
   class-settings.php                     Settings API page, write-only secret, Elliot import
   class-verifier.php                     /siteverify wrapper, 4-case matrix, per-request cache
-  class-widget-renderer.php              Widget markup + conditional (deferred) asset enqueue
+  class-widget-renderer.php              Widget markup; scripts registered on every front-end
+                                         page, enqueued (deferred) only where a widget renders
   elementor/class-turnstile-field.php    Per-form Elementor Pro field (render + validation)
   integrations/
     class-abstract-integration.php       Shared base (toggle gating, token read, verify)
@@ -55,8 +57,35 @@ A single `wp_options` row holds an array:
 | `protect_login` / `protect_register` / `protect_lostpassword` / `protect_comments` | `0` \| `1` | Native form toggles. |
 | `failure_mode` | `block` \| `allow` | Applied only when Cloudflare is unreachable. |
 
-No custom database tables are created. Uninstall deletes the option on single and
-multisite installs.
+A second option, `cwebts_version`, records the plugin version last seen, so
+Elementor's element cache is cleared once after each update (see below).
+
+No custom database tables are created. Uninstall deletes both options on single
+and multisite installs.
+
+## Elementor 4 element cache
+
+Elementor 4 stores each document's rendered widgets in the `_elementor_element_cache`
+post meta (24 hours by default). A cache hit renders nothing again: neither the
+Turnstile field nor the `elementor/widget/render_content` filter runs; Elementor
+serves the stored HTML and re-enqueues the script handles the document added to
+the queue on its first render. Four mechanisms keep protected forms working:
+
+1. `Widget_Renderer::register_assets()` registers (never enqueues) `cwebts` and
+   `cwebts-api` on `wp_enqueue_scripts`, so re-enqueued handles are known.
+2. `Plugin::keep_turnstile_forms_dynamic()` answers
+   `elementor/element/is_dynamic_content` with `true` for a form carrying the
+   Turnstile field (every form in all-forms mode): Elementor stores a placeholder
+   and renders the form on each request. Without it, a reused template first
+   cached on a page that had already queued the scripts records no handle.
+   A form whose own "Cache Settings" control is forced to Active bypasses this.
+3. `Settings::flush_elementor_cache_on_change()` deletes the cache (and Elementor's
+   generated CSS) when a setting that shapes the markup changes: the all-forms
+   toggle, keys (presence of the secret only), theme, size, appearance, language.
+4. `Settings::flush_elementor_cache_after_update()` (on `init`) deletes the element
+   cache once when `cwebts_version` differs from `CWEBTS_VERSION`.
+
+Always test an Elementor form on a second, cached visit (`tasks/lessons.md`).
 
 ## Verification decision matrix (`Verifier::verify()`)
 
@@ -102,7 +131,11 @@ Multi-form correlation is FIFO best-effort.
 
 `tests/run-tests.php` is a standalone runner (no PHPUnit) with WordPress function
 stubs in `tests/bootstrap.php`. It covers the Verifier decision matrix, the
-per-request cache, remote-IP handling, sanitisation, and the import edge cases.
-The `tests/` directory lives at the repository root and is **not** part of the
-shipped plugin. `tests/MANUAL-PROTOCOL.md` covers the integration paths that
-cannot run headless (Elementor field, native forms).
+per-request cache, remote-IP handling, sanitisation, the import edge cases and
+the Elementor cache handling (129 tests in 1.2.3). The hook stubs keep each
+callback, so tests call what the plugin actually hooks (`tf_hook()['callback']`).
+`tests/e2e/` holds a 28-step browser scenario (wp-env + Playwright, Cloudflare
+test keys); its README is the recipe. The `tests/` directory lives at the
+repository root and is **not** part of the shipped plugin.
+`tests/MANUAL-PROTOCOL.md` is the manual checklist for what the scenario does
+not cover.

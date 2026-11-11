@@ -7,7 +7,7 @@
 > **MISE À JOUR 2026-11-11 (v1.2.3 — cache d'Elementor, mode par formulaire)** —
 > Rendez-vous de fin de mois. Vérifié à l'exécution sur **WordPress 7.1.4 (PHP 8.3)
 > et 7.2 bêta 5 (PHP 8.5)**, Elementor 4.4.0, Elementor Pro 4.2.1, WooCommerce
-> 11.3.0 : scénario navigateur de 28 étapes (`tasks/todo.md`), toutes réussies
+> 11.3.0 : scénario navigateur de 28 étapes (`tests/e2e/`), toutes réussies
 > après correctif. Lecture du diff du cœur 7.1.4 → 7.2 bêta 5 : aucun crochet
 > utilisé par l'extension ne change. **Quatre vrais défauts trouvés et corrigés** :
 > (1) le **champ Turnstile par formulaire** perdait son widget dès la deuxième
@@ -214,7 +214,8 @@ captcha-field-for-turnstile/
   protégé inséré ensuite par AJAX (ou ajouté dans un aperçu Elementor déjà
   ouvert) n'a donc pas de widget. Un cache de pages ou un CDN qui n'écoute pas
   la purge d'Elementor peut servir l'ancien widget après un changement de clé.
-  La purge vide aussi les CSS générées par Elementor sur tout le site.
+  La purge au changement de réglage vide aussi les CSS générées par Elementor sur
+  tout le site (celle qui suit une mise à jour ne vide que le cache d'éléments).
 - **Cache d'éléments d'Elementor 4.x vs mode « tous les formulaires » — CORRIGÉ
   en 1.2.2.** Mesuré le 2026-08-13 sur WP 7.1-RC3 + Elementor Pro
   4.2.1 : Elementor 4.x met en cache le HTML rendu de chaque widget dans la
@@ -226,8 +227,9 @@ captcha-field-for-turnstile/
   captcha mais soumission refusée, sans recours pour le visiteur. Fenêtre
   d'exposition : jusqu'à 24 h après l'activation de l'option, sur les pages déjà
   rendues. Une fois le cache reconstruit, il contient le widget et tout redevient
-  normal. **N'affecte pas le mode par défaut** (champ Turnstile posé dans le
-  formulaire : Elementor vide le cache à l'enregistrement de la page).
+  normal. ~~N'affecte pas le mode par défaut~~ : **faux**, mesuré le 2026-11-11.
+  Le champ par formulaire perdait son widget dès la deuxième visite (voir la
+  première entrée de cette liste, corrigé en 1.2.3).
   *Correctif livré en 1.2.2* : `Settings::init()` écoute sa propre option
   (`update_option_cwebts_settings` et `add_option_cwebts_settings`) ; quand
   `protect_elementor_all_forms` change vraiment, il purge

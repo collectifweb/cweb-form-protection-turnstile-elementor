@@ -25,3 +25,4 @@ cweb-form-protection-turnstile-elementor-*.json
 
 # Local reviewer correspondence (.eml exports etc.)
 *.eml
+.claude/session-state.md
