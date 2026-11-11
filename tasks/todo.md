@@ -75,5 +75,6 @@ purge d'Elementor, coût de la purge des CSS d'Elementor sur un gros site.
 - Preuves : 129 tests sur PHP 7.4, 8.3 et 8.5 (14 défauts volontaires attrapés) ;
   scénario de 28 étapes sur 7.1.4 et 7.2 bêta 5, 0 erreur console, aucune ligne
   de l'extension dans `debug.log` ; Plugin Check 2.2.0 « No errors found ».
-- Publication : commit local, rien de poussé. Commande unique dans le résumé
-  remis à Alexandre.
+- Publication : sur le « oui » d'Alexandre, le 2026-11-11 à 13 h 42 (Toronto).
+  GitHub (commit `a0541c6`, étiquette et release `v1.2.3`), SVN wp.org rév. 3796883.
+  Vérifié : l'API WordPress.org annonce la 1.2.3, zip public identique au dépôt.

@@ -1,6 +1,6 @@
 # STATUS — CWeb Form Protection with Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-11-11 (rendez-vous de fin octobre : compatibilité 7.1.4 / 7.2 bêta, v1.2.3 préparée). Le plugin vit dans
+> Dernière mise à jour : 2026-11-11 (rendez-vous de fin octobre : compatibilité 7.1.4 / 7.2 bêta, v1.2.3 publiée). Le plugin vit dans
 > `cweb-form-protection-turnstile-elementor/` ; les tests dans `tests/` (racine repo,
 > hors plugin) ; la doc + assets dans `docs/`.
 
@@ -89,9 +89,11 @@
 
 ## Où en est-on
 
-**Plugin v1.2.2 en ligne sur WordPress.org ; v1.2.3 prête localement (commit
-local), en attente du « oui » d'Alexandre pour la publier** (push GitHub, tag et
-release, SVN wp.org). Le développement de fonctionnalités est en pause ; ce qui
+**Plugin v1.2.3 en ligne sur WordPress.org depuis le 2026-11-11 (13 h 42, heure de
+Toronto)**, sur le « oui » d'Alexandre : commit `a0541c6`, étiquette et release GitHub
+`v1.2.3` (avec le zip), SVN wp.org rév. 3796883 (trunk + tags/1.2.3). Vérifié après
+coup : l'API WordPress.org annonce la 1.2.3, et le zip public est identique, fichier
+pour fichier, au dossier de l'extension dans le dépôt. Le développement de fonctionnalités est en pause ; ce qui
 bouge relève de la maintenance (compatibilité, correctifs).
 
 Pipeline suivi à chaque version : plan → **confront-codex (consensus)** →
