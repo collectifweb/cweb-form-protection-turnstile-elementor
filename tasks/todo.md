@@ -85,17 +85,17 @@ Quand : à la version candidate de WordPress 7.2 (RC1 prévue le 17 novembre, so
 8 décembre, d'après make.wordpress.org/core/7-2/), au plus tard au rendez-vous de fin novembre.
 
 - [ ] Recréer un site de test sur la 7.2 RC avec la recette de `tests/e2e/README.md`. Les
-      réglages des sites du 11 novembre étaient dans un dossier temporaire de session : ne
-      pas compter dessus. Elementor Pro 4.2.1 : copie dans
-      `~/.wp-env/wp-env-LC_academie-54963819/WordPress/wp-content/plugins/elementor-pro/`.
-      Demander à Alexandre une archive plus récente s'il en a une (seule la 4.2.1 est testée).
+      sites du 11 novembre ont été fermés et supprimés. Elementor Pro : **demander à
+      Alexandre l'archive de la version la plus récente** (ça ne le dérange pas, dit-il le
+      11 novembre). Relevé ce jour-là : aucune copie plus récente que la 4.2.1 sur le poste
+      (LC_academie dans `~/.wp-env` ; les sites de `~/Apps-coding` sont en 3.x).
 - [ ] Relever les versions du jour : WordPress, Elementor, WooCommerce, Plugin Check.
 - [ ] Rejouer le scénario de 28 étapes, Plugin Check dans sa dernière version,
       `php tests/run-tests.php` sous PHP 7.4, 8.3 et 8.5, et relire `debug.log`.
 - [ ] Si tout passe : « Tested up to: 7.2 » dans `readme.txt`, sans nouvelle version.
-      Sur le SVN, changer le readme de `trunk/` et de `tags/1.2.3/` (la page publique lit
-      celui de la version stable, d'après le guide des extensions WordPress.org : à
-      revérifier avant l'envoi). Commit et push sans attendre ; l'envoi SVN attend le
-      « oui » d'Alexandre.
+      Sur le SVN, changer le readme de `trunk/` **et** de `tags/1.2.3/` : quand l'étiquette
+      stable existe, WordPress.org ne lit plus rien dans `trunk` (vérifié le 11 novembre
+      dans le guide « How your readme.txt works »). Commit et push sans attendre. Alexandre
+      a dit de faire cet envoi SVN du readme sans lui redemander (11 novembre).
 - [ ] Revoir les points signalés non traités (`docs/STATUS.md`, « Limites connues ») :
       formulaire inséré par AJAX sur une page sans widget, caches de pages ou CDN.
