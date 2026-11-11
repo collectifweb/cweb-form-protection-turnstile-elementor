@@ -44,6 +44,15 @@ passer une faute de nom dans `add_action()` : le test passe, le site ne fait rie
 fonction branchée : l'appeler via `tf_hook(...)['callback']`. Après un nouveau bloc
 de tests, casser volontairement le code dans une copie pour vérifier qu'il échoue.
 
+## Git : pousser chaque commit, même sous la consigne du Chef (2026-11-11)
+
+**Piège.** Après la publication de la 1.2.3, j'ai laissé un commit de documentation en
+local, en lisant « rien de visible sans accord » comme couvrant aussi le push.
+
+**Règle.** Un commit est poussé tout de suite, sans demander (consigne écrite dans
+`Le Caribou/CLAUDE.md`). Le « oui » d'Alexandre reste nécessaire pour publier une version
+(étiquette, release GitHub, envoi SVN).
+
 ## Plugin Check : relancer la version du jour (2026-11-11)
 
 **Piège.** « Plugin Check : No errors found » datait de la 2.0.0. La 2.1.0 a

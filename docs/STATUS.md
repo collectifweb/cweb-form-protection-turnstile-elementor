@@ -184,7 +184,8 @@ captcha-field-for-turnstile/
    7.1.4 (et 7.2 bêta 5).
 2. **Passer « Tested up to » à 7.2** quand la 7.2 sera en RC ou sortie (prévue le
    2026-12-08) : modification du seul readme, sans nouvelle version. Rejouer
-   d'abord le scénario sur la RC.
+   d'abord le scénario sur la RC. Liste détaillée : `tasks/todo.md`, section
+   « Prochain rendez-vous ».
 3. (piste) Couvrir le **Checkout Block** de WooCommerce (la page de commande en
    blocs Gutenberg), aujourd'hui hors périmètre — seule la page à l'ancienne
    (shortcode) est protégée.
