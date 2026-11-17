@@ -2,7 +2,7 @@
 Contributors: alexandreminem
 Tags: turnstile, captcha, elementor, spam, cloudflare
 Requires at least: 5.8
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Requires Plugins: elementor
 Stable tag: 1.2.3

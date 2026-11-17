@@ -79,23 +79,42 @@ purge d'Elementor, coût de la purge des CSS d'Elementor sur un gros site.
   GitHub (commit `a0541c6`, étiquette et release `v1.2.3`), SVN wp.org rév. 3796883.
   Vérifié : l'API WordPress.org annonce la 1.2.3, zip public identique au dépôt.
 
-## Prochain rendez-vous (noté le 11 novembre)
+## Rendez-vous du 17 novembre : WordPress 7.2 RC1 (fait)
 
 Quand : à la version candidate de WordPress 7.2 (RC1 prévue le 17 novembre, sortie le
 8 décembre, d'après make.wordpress.org/core/7-2/), au plus tard au rendez-vous de fin novembre.
 
-- [ ] Recréer un site de test sur la 7.2 RC avec la recette de `tests/e2e/README.md`. Les
+- [x] Recréer un site de test sur la 7.2 RC avec la recette de `tests/e2e/README.md`. Les
       sites du 11 novembre ont été fermés et supprimés. Elementor Pro : **demander à
       Alexandre l'archive de la version la plus récente** (ça ne le dérange pas, dit-il le
       11 novembre). Relevé ce jour-là : aucune copie plus récente que la 4.2.1 sur le poste
       (LC_academie dans `~/.wp-env` ; les sites de `~/Apps-coding` sont en 3.x).
-- [ ] Relever les versions du jour : WordPress, Elementor, WooCommerce, Plugin Check.
-- [ ] Rejouer le scénario de 28 étapes, Plugin Check dans sa dernière version,
+- [x] Relever les versions du jour : WordPress, Elementor, WooCommerce, Plugin Check.
+- [x] Rejouer le scénario de 28 étapes, Plugin Check dans sa dernière version,
       `php tests/run-tests.php` sous PHP 7.4, 8.3 et 8.5, et relire `debug.log`.
-- [ ] Si tout passe : « Tested up to: 7.2 » dans `readme.txt`, sans nouvelle version.
+- [x] Si tout passe : « Tested up to: 7.2 » dans `readme.txt`, sans nouvelle version.
       Sur le SVN, changer le readme de `trunk/` **et** de `tags/1.2.3/` : quand l'étiquette
       stable existe, WordPress.org ne lit plus rien dans `trunk` (vérifié le 11 novembre
       dans le guide « How your readme.txt works »). Commit et push sans attendre. Alexandre
       a dit de faire cet envoi SVN du readme sans lui redemander (11 novembre).
 - [ ] Revoir les points signalés non traités (`docs/STATUS.md`, « Limites connues ») :
       formulaire inséré par AJAX sur une page sans widget, caches de pages ou CDN.
+
+Bilan du 17 novembre (heure de Toronto) :
+
+- RC1 vérifiée : archive en ligne à 10 h 41 (fichier de version `7.2-RC1`), annonce publiée
+  vers 11 h 20, API de mise à jour sur `7.2-RC1-65559`.
+- Versions : Elementor 4.4.1 (nouvelle), Elementor Pro 4.4.1 (archive fournie par Alexandre),
+  WooCommerce 11.3.0, Plugin Check 2.2.0. Site wp-env en PHP 8.5.
+- Bêta 5 → RC1 : 273 fichiers diffèrent ; aucune ligne modifiée ne touche un crochet de
+  l'extension (une seule ligne citant `wp_enqueue_script`, dans la page des connecteurs).
+  Le module « secrets » de la bêta 5 est retiré de la RC1 ; l'extension ne s'en servait pas.
+- Scénario 28/28, 0 erreur console ; Plugin Check « No errors found » ; 129 tests sur
+  PHP 7.4, 8.3 et 8.5 ; `debug.log` : 1 avis d'Elementor Pro (PHP 8.5), rien de l'extension.
+- « Tested up to: 7.2 » : commit Git, SVN rév. 3807781 (readme de `trunk/` et `tags/1.2.3/`,
+  11 h 21), envoyé sans redemander, selon l'accord du 11 novembre.
+- Points signalés non traités (formulaire inséré par AJAX, caches de pages ou CDN) : rien de
+  nouveau, toujours ouverts.
+
+Prochain rendez-vous : fin novembre (rendez-vous mensuel), puis la sortie de la 7.2 prévue
+le 8 décembre. Rejouer le scénario sur la version finale ; aucun changement de readme prévu.

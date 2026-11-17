@@ -1,6 +1,6 @@
 # STATUS — CWeb Form Protection with Turnstile for Elementor Forms (handoff / reprise après compaction)
 
-> Dernière mise à jour : 2026-11-11 (rendez-vous de fin octobre : compatibilité 7.1.4 / 7.2 bêta, v1.2.3 publiée). Le plugin vit dans
+> Dernière mise à jour : 2026-11-17 (WordPress 7.2 RC1 : scénario 28/28, « Tested up to: 7.2 » en ligne). Le plugin vit dans
 > `cweb-form-protection-turnstile-elementor/` ; les tests dans `tests/` (racine repo,
 > hors plugin) ; la doc + assets dans `docs/`.
 
@@ -182,10 +182,10 @@ captcha-field-for-turnstile/
 
 1. ~~Rejouer la vérification sur WordPress 7.1 finale~~ : fait le 2026-11-11 sur
    7.1.4 (et 7.2 bêta 5).
-2. **Passer « Tested up to » à 7.2** quand la 7.2 sera en RC ou sortie (prévue le
-   2026-12-08) : modification du seul readme, sans nouvelle version. Rejouer
-   d'abord le scénario sur la RC. Liste détaillée : `tasks/todo.md`, section
-   « Prochain rendez-vous ».
+2. ~~Passer « Tested up to » à 7.2~~ : fait le 2026-11-17 sur la RC1 (scénario
+   28/28, Elementor et Elementor Pro 4.4.1), SVN rév. 3807781. Bilan dans
+   `tasks/todo.md`. Reste : rejouer le scénario sur la 7.2 finale (prévue le
+   2026-12-08).
 3. (piste) Couvrir le **Checkout Block** de WooCommerce (la page de commande en
    blocs Gutenberg), aujourd'hui hors périmètre — seule la page à l'ancienne
    (shortcode) est protégée.
