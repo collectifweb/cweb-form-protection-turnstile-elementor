@@ -53,6 +53,18 @@ local, en lisant « rien de visible sans accord » comme couvrant aussi le push.
 `Le Caribou/CLAUDE.md`). Le « oui » d'Alexandre reste nécessaire pour publier une version
 (étiquette, release GitHub, envoi SVN).
 
+## Version candidate de WordPress : comment savoir qu'elle est sortie (2026-11-17)
+
+**Piège.** Le jour J, l'archive `wordpress.org/wordpress-7.2-RC1.zip` était en ligne (10 h 41)
+avant l'annonce et avant que l'API de mise à jour la propose (encore la bêta 5) : les deux
+sources se contredisaient pendant environ 40 minutes.
+
+**Règle.** Lire `$wp_version` dans `wp-includes/version.php` de l'archive, puis attendre
+l'annonce (flux `wordpress.org/news/feed/`) avant de toucher au readme. Les essais peuvent
+commencer sur l'archive. Avec `diff -rq`, « Seulement dans » nomme le dossier où le fichier
+existe : vérifier de quel côté avant de conclure à un ajout (le module « secrets » était
+retiré de la RC1, pas ajouté).
+
 ## Plugin Check : relancer la version du jour (2026-11-11)
 
 **Piège.** « Plugin Check : No errors found » datait de la 2.0.0. La 2.1.0 a

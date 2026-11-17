@@ -27,7 +27,7 @@
 > profitent des correctifs sans attendre 24 h. **Plugin Check 2.1+** signalait
 > 3 « OffloadedContent » (règle élargie le 16 août) : `phpcs:ignore` justifiés,
 > 2.2.0 → « No errors found ». Tests : 101 → 129, PHP 7.4 / 8.3 / 8.5.
-> « Tested up to » laissé à 7.1 (la 7.2 sort le 8 décembre).
+> « Tested up to » laissé à 7.1 ce jour-là, passé à 7.2 le 2026-11-17 sur la RC1.
 
 > **MISE À JOUR 2026-08-13 (v1.2.1 — compatibilité WordPress 7.1)** — Le courriel
 > « WordPress 7.1 is scheduled for release on August 19 » demandait de passer
